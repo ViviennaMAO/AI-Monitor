@@ -30,8 +30,12 @@ Page({
       delete getApp().globalData.rotationIntent;
       this._applyIntent(intent.out, intent.in);
     }
-    // pull wallet status from app globalData
+    // pull wallet status from app globalData; if soft-login still in flight, wait for it
     this.setData({ wallet: getApp().globalData.wallet || null });
+    const p = getApp().globalData.walletPromise;
+    if (p && !getApp().globalData.walletReady) {
+      p.then(() => this.setData({ wallet: getApp().globalData.wallet || null }));
+    }
   },
   onPullDownRefresh() {
     loadAll().then(c => {

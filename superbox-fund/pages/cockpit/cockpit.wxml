@@ -142,29 +142,26 @@
       </view>
     </view>
 
-    <!-- PM identity -->
+    <!-- PM identity (Luffa SuperBox 自动软登录,无需按钮) -->
     <view class="card">
       <view class="card-h">
         <text class="k">PM · 身份</text>
         <text class="t">投资经理 Luffa 身份</text>
       </view>
-      <block wx:if="{{wallet}}">
-        <view class="wallet-on">
-          <view class="wo-dot"></view>
-          <view style="flex:1">
+      <view class="wallet-on">
+        <view class="wo-dot"></view>
+        <view style="flex:1; min-width:0;">
+          <block wx:if="{{wallet}}">
             <text class="wo-name">{{wallet.nickname || 'Luffa User'}}</text>
             <text class="wo-addr">{{wallet.address}}</text>
-          </view>
+          </block>
+          <block wx:else>
+            <text class="wo-name muted">{{walletReady ? '未登录 Luffa' : '载入中…'}}</text>
+            <text class="wo-addr">{{walletReady ? '请在 Luffa 客户端打开本小程序' : ''}}</text>
+          </block>
         </view>
-        <text class="hint">调仓单将以此身份签署</text>
-      </block>
-      <block wx:else>
-        <button class="btn" bindtap="onConnect" disabled="{{connecting}}">
-          {{connecting ? '连接中…' : '连接 Luffa 钱包'}}
-        </button>
-        <text class="hint">仅用 signMessageV2 签调仓单 · 不发起链上交易</text>
-      </block>
-      <view wx:if="{{connectError}}" class="err">{{connectError}}</view>
+      </view>
+      <text class="hint">调仓单将以此身份签署 · signMessageV2 · 不发起链上交易</text>
     </view>
 
     <view class="foot">
