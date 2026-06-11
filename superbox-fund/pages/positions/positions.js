@@ -25,7 +25,8 @@ Page({
     filter: 'all', selected: 'NVDA',
     stocks: [], totalCount: 0, filteredCount: 0,
     selectedStock: null,
-    cbs: [], stockAlerts: [], fireCount: 0, watchCount: 0
+    cbs: [], stockAlerts: [], fireCount: 0, watchCount: 0,
+    cbSummary: ''
   },
 
   onLoad() { this._render(); },
@@ -123,6 +124,19 @@ Page({
       if (st === 'fire') fired.push(row); else watched.push(row);
     });
 
+    // Compact summary of CB states for the hero card: e.g. "✓ ⚠ —"
+    const cbGlyph = (st) => ({
+      normal: '✓', pending: '—',
+      watch: '⚠', reduce: '⚠',
+      pause:  '⛔', liquidate: '⛔', fire: '⛔'
+    })[st] || '·';
+    const cbSummary = cbs.map(cb => cbGlyph(cb.stateTxt === '正常'   ? 'normal' :
+                                            cb.stateTxt === '观察'   ? 'watch'  :
+                                            cb.stateTxt === '减仓'   ? 'reduce' :
+                                            cb.stateTxt === '暂停'   ? 'pause'  :
+                                            cb.stateTxt === '清仓'   ? 'liquidate' :
+                                            cb.stateTxt === '待接入' ? 'pending' : 'normal')).join(' ');
+
     this.setData({
       ready: true,
       asOf: c.holdings.as_of,
@@ -135,7 +149,8 @@ Page({
       cbs,
       stockAlerts: fired.concat(watched),
       fireCount: fired.length,
-      watchCount: watched.length
+      watchCount: watched.length,
+      cbSummary
     });
   },
 

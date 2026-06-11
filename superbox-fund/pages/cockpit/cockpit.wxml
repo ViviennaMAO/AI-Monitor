@@ -1,150 +1,180 @@
 <view class="page" wx:if="{{ready}}">
 
-  <!-- topbar + SFC ribbon -->
-  <view class="topbar">
-    <text class="brand">LUFFA·BOX</text>
-    <text class="sub">AI 生态基金</text>
-    <view class="health {{status==='live' ? 'live' : ''}}" bindtap="onTapHealth">
-      <view class="dot"></view>
-      <text>{{status === 'live' ? 'LIVE' : 'DEMO · 待接入'}}</text>
-    </view>
-  </view>
-  <view class="sfc">
-    <view class="sfc-h">
-      <text class="badge">SFC</text>
-      <text>由 <text style="color:#2DD4BF;font-weight:600;">Luffa 香港</text> 持牌实体托管 · 证监会 1/4/9 号牌</text>
-    </view>
-    <text class="sfc-s">LAIF-I · 合格投资者(PI) · 非投资建议</text>
-  </view>
-
-  <!-- KPI strip -->
-  <view class="kpis">
-    <view class="kpi">
-      <text class="lab">基金净值</text>
-      <text class="val num">{{nav}}</text>
-      <text class="sub muted">起始 1.000</text>
-    </view>
-    <view class="kpi">
-      <text class="lab">超额(vs 基准)</text>
-      <text class="val num pos">+{{excessPct}}%</text>
-      <text class="sub pos">↑ 跑赢</text>
-    </view>
-    <view class="kpi">
-      <text class="lab">当前回撤</text>
-      <text class="val num">−{{ddPct}}%</text>
-      <text class="sub muted">最大 −{{mddPct}}%</text>
-    </view>
-    <view class="kpi">
-      <text class="lab">组合 β</text>
-      <text class="val num">{{beta}}</text>
-      <text class="sub warn">偏进攻</text>
-    </view>
-    <view class="kpi">
-      <text class="lab">现金仓位</text>
-      <text class="val num">{{cashPct}}%</text>
-      <text class="sub muted">已投 {{investedPct}}%</text>
-    </view>
-  </view>
-
-  <!-- L1 · climate gate -->
-  <view class="card">
-    <view class="card-h">
-      <text class="k">L1 · 气候层</text>
-      <text class="t">市场气候门控</text>
-      <text class="n">final_mult {{regime.final_mult}}</text>
-    </view>
-    <view class="regime-top">
-      <view class="season">{{regimeIcon}}</view>
-      <view style="flex:1">
-        <view class="verdict">气候:<text class="pos">{{regime.verdict.label}}</text></view>
-        <view class="why">4 项门控信号 · {{upCount}} 偏多 / {{warnCount}} 预警</view>
+  <!-- ============ HERO (blue gradient) ============ -->
+  <view class="hero">
+    <view class="topbar">
+      <text class="brand">LUFFA · BOX</text>
+      <text class="sub">AI 生态基金</text>
+      <view class="health {{status==='live' ? 'live' : ''}}" bindtap="onTapHealth">
+        <view class="dot"></view>
+        <text>{{status === 'live' ? 'LIVE' : 'DEMO'}}</text>
       </view>
     </view>
-    <view class="gauge-wrap">
-      <view class="gauge"></view>
-      <view class="ptr" style="left: {{gaugePct}}%"></view>
-      <view class="gauge-labs">
-        <text>防守·冬</text><text>中性·春秋</text><text>进攻·夏</text>
+
+    <view class="sfc">
+      <view class="sfc-h">
+        <text class="badge">SFC</text>
+        <text>Luffa 香港 · 证监会 1/4/9 号牌</text>
       </view>
+      <text class="sfc-s">LAIF-I · 合格投资者 · 非投资建议</text>
     </view>
-    <view class="signals">
-      <view class="sig" wx:for="{{regime.signals}}" wx:key="key">
-        <text class="n">{{item.name}}{{item.is_master ? ' ★' : ''}}</text>
-        <view class="v">
-          <view class="dot" style="background: {{sigColor[item.state]}}"></view>
-          <text>{{sigLabel[item.state]}}</text>
+
+    <view class="hero-kpi">
+      <text class="hk-lab">基金净值 / 累计</text>
+      <text class="hk-val num">{{nav}}</text>
+      <text class="hk-sub">{{status === 'live' ? '实时' : '演示数据'}} · 起始 1.000</text>
+    </view>
+
+    <view class="mini-row">
+      <view class="mini">
+        <view class="mi-ic mi-pos"><text>+</text></view>
+        <view class="mi-body">
+          <text class="mi-val num pos">+{{excessPct}}%</text>
+          <text class="mi-lab">超额 vs 基准</text>
+        </view>
+      </view>
+      <view class="mini">
+        <view class="mi-ic mi-neg"><text>−</text></view>
+        <view class="mi-body">
+          <text class="mi-val num">−{{ddPct}}%</text>
+          <text class="mi-lab">当前回撤</text>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- L2 · exposure map -->
-  <view class="card">
-    <view class="card-h">
-      <text class="k">L2 · 曝露层</text>
-      <text class="t">价值链曝露地图</text>
-      <text class="n">识别"假分散"</text>
-    </view>
-    <view class="expo-bar">
-      <view class="seg compute" style="width: {{segPct.compute}}%">算力 {{segPct.compute}}%</view>
-      <view class="seg cloud"   style="width: {{segPct.cloud}}%">云 {{segPct.cloud}}%</view>
-      <view class="seg app"     style="width: {{segPct.app}}%">应用 {{segPct.app}}%</view>
-      <view class="seg power"   style="width: {{segPct.power}}%">供应链 {{segPct.power}}%</view>
-      <view class="seg cash"    style="width: {{segPct.cash}}%">现金 {{segPct.cash}}%</view>
-    </view>
-    <view class="conc">
-      <view class="b">
-        <text class="v num">{{top1Pct}}%</text>
-        <text class="l">第一大持仓</text>
-      </view>
-      <view class="b">
-        <text class="v num">{{top3Pct}}%</text>
-        <text class="l">前三大集中度</text>
-      </view>
-      <view class="b">
-        <text class="v num warn">{{exposure.avg_correlation}}</text>
-        <text class="l">平均相关</text>
-      </view>
-    </view>
-    <view class="alert">
-      <text class="a-i">⚠</text>
-      <view>
-        <text class="a-b">隐藏暴露预警:</text>
-        10 个标的中约 {{exposure.capex_beta_high_count}} 个对"超大厂 Capex 叙事"高 β,真实独立判断 ≈ <text class="a-b">{{exposure.independent_bets_est}} 注</text>。Capex 叙事松动,组合将同向回撤。
-      </view>
-    </view>
-  </view>
+  <!-- ============ BODY ============ -->
+  <view class="body">
 
-  <!-- PM identity (Luffa wallet) -->
-  <view class="card">
-    <view class="card-h">
-      <text class="k">PM · 身份</text>
-      <text class="t">投资经理 Luffa 身份</text>
-    </view>
-    <block wx:if="{{wallet}}">
-      <view class="wallet-row">
-        <text>已连接 · </text>
-        <text style="font-weight:600;">{{wallet.nickname || 'Luffa User'}}</text>
+    <!-- KPI mini bar -->
+    <view class="card">
+      <view class="kpi-grid">
+        <view class="kp">
+          <text class="kp-lab">组合 β</text>
+          <text class="kp-val num">{{beta}}</text>
+          <text class="kp-sub warn">偏进攻</text>
+        </view>
+        <view class="kp">
+          <text class="kp-lab">现金仓位</text>
+          <text class="kp-val num">{{cashPct}}%</text>
+          <text class="kp-sub muted">已投 {{investedPct}}%</text>
+        </view>
+        <view class="kp">
+          <text class="kp-lab">最大回撤</text>
+          <text class="kp-val num">−{{mddPct}}%</text>
+          <text class="kp-sub muted">滚动 1Y</text>
+        </view>
       </view>
-      <text class="mono dim" style="font-size:20rpx; word-break:break-all;">{{wallet.address}}</text>
-      <text class="hint">调仓单 / 审批将以此身份签署</text>
-    </block>
-    <block wx:else>
-      <button class="btn" bindtap="onConnect" disabled="{{connecting}}">
-        {{connecting ? '连接中…' : '连接 Luffa 钱包(用于签署调仓单)'}}
-      </button>
-      <text class="hint">不发起链上交易 · 仅用 signMessageV2 签署调仓单哈希</text>
-    </block>
-    <view wx:if="{{connectError}}" class="err">{{connectError}}</view>
-  </view>
+    </view>
 
-  <view class="foot">
-    <text>数据截至 {{asOf}} · </text>
-    <text class="demo-tag" wx:if="{{status !== 'live'}}">演示数据 · 非投资建议</text>
-  </view>
+    <!-- L1 · climate gate -->
+    <view class="card">
+      <view class="card-h">
+        <text class="k">L1 · 气候层</text>
+        <text class="t">市场气候门控</text>
+        <text class="n">×{{regime.final_mult}}</text>
+      </view>
+      <view class="regime-top">
+        <view class="season">{{regimeIcon}}</view>
+        <view style="flex:1">
+          <view class="verdict">{{regime.verdict.label}}</view>
+          <view class="why">{{upCount}} 项偏多 / {{warnCount}} 项预警</view>
+        </view>
+      </view>
+      <view class="gauge-wrap">
+        <view class="gauge"></view>
+        <view class="ptr" style="left: {{gaugePct}}%"></view>
+        <view class="gauge-labs">
+          <text>冬 · 防守</text><text>春秋 · 中性</text><text>夏 · 进攻</text>
+        </view>
+      </view>
+      <view class="signals">
+        <view class="sig" wx:for="{{regime.signals}}" wx:key="key">
+          <text class="n">{{item.name}}{{item.is_master ? ' ★' : ''}}</text>
+          <view class="v">
+            <view class="dot" style="background: {{sigColor[item.state]}}"></view>
+            <text>{{sigLabel[item.state]}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
 
+    <!-- L2 · exposure map -->
+    <view class="card">
+      <view class="card-h">
+        <text class="k">L2 · 曝露层</text>
+        <text class="t">价值链曝露</text>
+        <text class="n">识别"假分散"</text>
+      </view>
+      <view class="expo-bar">
+        <view class="seg compute" style="width: {{segPct.compute}}%">{{segPct.compute}}%</view>
+        <view class="seg cloud"   style="width: {{segPct.cloud}}%">{{segPct.cloud}}%</view>
+        <view class="seg app"     style="width: {{segPct.app}}%">{{segPct.app}}%</view>
+        <view class="seg power"   style="width: {{segPct.power}}%">{{segPct.power}}%</view>
+        <view class="seg cash"    style="width: {{segPct.cash}}%">{{segPct.cash}}%</view>
+      </view>
+      <view class="legend">
+        <view class="lg"><view class="lg-d" style="background:#5468FF"></view><text>算力 · 4</text></view>
+        <view class="lg"><view class="lg-d" style="background:#7C8CFF"></view><text>云 · 3</text></view>
+        <view class="lg"><view class="lg-d" style="background:#A78BFA"></view><text>应用 · 2</text></view>
+        <view class="lg"><view class="lg-d" style="background:#F59E0B"></view><text>供应链 · 1</text></view>
+        <view class="lg"><view class="lg-d" style="background:#CBD5E1"></view><text>现金</text></view>
+      </view>
+      <view class="conc">
+        <view class="b">
+          <text class="v num">{{top1Pct}}%</text>
+          <text class="l">第一大持仓</text>
+        </view>
+        <view class="b">
+          <text class="v num">{{top3Pct}}%</text>
+          <text class="l">前三大集中度</text>
+        </view>
+        <view class="b">
+          <text class="v num warn">{{exposure.avg_correlation}}</text>
+          <text class="l">平均相关</text>
+        </view>
+      </view>
+      <view class="alert">
+        <text class="a-i">⚠</text>
+        <view>
+          <text class="a-b">隐藏暴露:</text>10 标的中 {{exposure.capex_beta_high_count}} 个对 Capex 叙事高 β,真实独立判断 ≈ <text class="a-b">{{exposure.independent_bets_est}} 注</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- PM identity -->
+    <view class="card">
+      <view class="card-h">
+        <text class="k">PM · 身份</text>
+        <text class="t">投资经理 Luffa 身份</text>
+      </view>
+      <block wx:if="{{wallet}}">
+        <view class="wallet-on">
+          <view class="wo-dot"></view>
+          <view style="flex:1">
+            <text class="wo-name">{{wallet.nickname || 'Luffa User'}}</text>
+            <text class="wo-addr">{{wallet.address}}</text>
+          </view>
+        </view>
+        <text class="hint">调仓单将以此身份签署</text>
+      </block>
+      <block wx:else>
+        <button class="btn" bindtap="onConnect" disabled="{{connecting}}">
+          {{connecting ? '连接中…' : '连接 Luffa 钱包'}}
+        </button>
+        <text class="hint">仅用 signMessageV2 签调仓单 · 不发起链上交易</text>
+      </block>
+      <view wx:if="{{connectError}}" class="err">{{connectError}}</view>
+    </view>
+
+    <view class="foot">
+      <text>数据截至 {{asOf}}</text>
+      <text class="demo-tag" wx:if="{{status !== 'live'}}">演示数据</text>
+    </view>
+
+  </view>
 </view>
 
-<view class="page" wx:else>
+<view class="page-loading" wx:else>
   <text class="muted">加载中…</text>
 </view>

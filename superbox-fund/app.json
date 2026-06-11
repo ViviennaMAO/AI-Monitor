@@ -5,21 +5,24 @@
     "pages/rotation/rotation"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "backgroundColor": "#0E1116",
-    "navigationBarBackgroundColor": "#0E1116",
+    "backgroundTextStyle": "dark",
+    "backgroundColor": "#F4F6FF",
+    "navigationBarBackgroundColor": "#5468FF",
     "navigationBarTitleText": "AI 生态基金",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
-    "color": "#6B7480",
-    "selectedColor": "#2DD4BF",
-    "backgroundColor": "#161B22",
-    "borderStyle": "black",
+    "color": "#6B7280",
+    "selectedColor": "#5468FF",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
     "list": [
-      { "pagePath": "pages/cockpit/cockpit",     "text": "驾驶舱" },
-      { "pagePath": "pages/positions/positions", "text": "持仓" },
-      { "pagePath": "pages/rotation/rotation",   "text": "调仓" }
+      { "pagePath": "pages/cockpit/cockpit",     "text": "驾驶舱",
+        "iconPath": "images/tab/cockpit.png",   "selectedIconPath": "images/tab/cockpit_sel.png" },
+      { "pagePath": "pages/positions/positions", "text": "持仓",
+        "iconPath": "images/tab/positions.png", "selectedIconPath": "images/tab/positions_sel.png" },
+      { "pagePath": "pages/rotation/rotation",   "text": "调仓",
+        "iconPath": "images/tab/rotation.png",  "selectedIconPath": "images/tab/rotation_sel.png" }
     ]
   },
   "networkTimeout": { "request": 10000 },

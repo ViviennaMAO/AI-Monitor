@@ -1,47 +1,77 @@
-/* KPI strip */
-.kpis {
-  display: flex; flex-wrap: wrap;
-  background: rgba(255,255,255,0.08);
-  border: 1rpx solid rgba(255,255,255,0.08);
-  border-radius: 14rpx; overflow: hidden;
-  margin-bottom: 24rpx;
+/* ============ hero KPI ============ */
+.hero-kpi { margin-top: 22rpx; }
+.hero-kpi .hk-lab {
+  display: block; font-size: 22rpx;
+  color: rgba(255,255,255,0.75);
 }
-.kpi {
-  flex: 1 0 33.333%;
-  background: #161B22;
-  padding: 18rpx 20rpx;
-  display: flex; flex-direction: column; gap: 4rpx;
-  border-right: 1rpx solid rgba(255,255,255,0.04);
-  border-bottom: 1rpx solid rgba(255,255,255,0.04);
+.hero-kpi .hk-val {
+  display: block; font-size: 76rpx; font-weight: 800;
+  color: #FFFFFF; line-height: 1.1; margin: 6rpx 0 4rpx;
 }
-.kpi .lab { font-size: 20rpx; color: #9AA4B2; }
-.kpi .val { font-size: 38rpx; font-weight: 600; }
-.kpi .sub { font-size: 20rpx; margin-top: 2rpx; }
+.hero-kpi .hk-sub {
+  display: block; font-size: 22rpx;
+  color: rgba(255,255,255,0.75);
+}
 
-/* climate gauge */
+/* two mini stat cards inside hero */
+.mini-row {
+  display: flex; gap: 14rpx; margin-top: 24rpx;
+}
+.mini {
+  flex: 1; display: flex; align-items: center; gap: 12rpx;
+  background: rgba(255,255,255,0.18);
+  border: 1rpx solid rgba(255,255,255,0.25);
+  border-radius: 18rpx;
+  padding: 14rpx 16rpx;
+  backdrop-filter: blur(8rpx);
+}
+.mini .mi-ic {
+  width: 56rpx; height: 56rpx; border-radius: 14rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30rpx; font-weight: 700;
+}
+.mini .mi-ic.mi-pos { background: rgba(16,185,129,0.9); color: #FFFFFF; }
+.mini .mi-ic.mi-neg { background: rgba(239,68,68,0.9);  color: #FFFFFF; }
+.mini .mi-val {
+  display: block; font-size: 28rpx; font-weight: 700; color: #FFFFFF;
+}
+.mini .mi-lab {
+  display: block; font-size: 18rpx; color: rgba(255,255,255,0.75);
+}
+
+/* ============ body KPI grid ============ */
+.kpi-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18rpx;
+}
+.kp { display: flex; flex-direction: column; gap: 4rpx; }
+.kp .kp-lab { font-size: 20rpx; color: #6B7280; }
+.kp .kp-val { font-size: 36rpx; font-weight: 700; color: #1B1F3B; }
+.kp .kp-sub { font-size: 18rpx; }
+
+/* ============ climate gauge ============ */
 .regime-top { display:flex; align-items:center; gap: 18rpx; margin-bottom: 18rpx; }
 .season {
-  width: 84rpx; height: 84rpx; border-radius: 20rpx;
+  width: 84rpx; height: 84rpx; border-radius: 24rpx;
   display:flex; align-items:center; justify-content:center;
-  font-size: 42rpx; background: rgba(74,222,128,0.12);
-  border: 1rpx solid rgba(74,222,128,0.3);
+  font-size: 42rpx;
+  background: linear-gradient(135deg, #FEF3C7, #FCD34D);
 }
-.regime-top .verdict { font-size: 30rpx; font-weight: 600; }
-.regime-top .why     { font-size: 22rpx; color: #9AA4B2; margin-top: 4rpx; }
+.regime-top .verdict { font-size: 30rpx; font-weight: 700; color: #1B1F3B; }
+.regime-top .why     { font-size: 22rpx; color: #6B7280; margin-top: 4rpx; }
 
 .gauge-wrap { position: relative; margin: 18rpx 4rpx 6rpx; }
 .gauge {
   height: 14rpx; border-radius: 8rpx;
-  background: linear-gradient(90deg, #3a4a6b 0%, #566072 32%, #9AA4B2 50%, #3fae8e 70%, #4ADE80 100%);
+  background: linear-gradient(90deg, #C7D2FE 0%, #A5B4FC 30%, #818CF8 60%, #6366F1 80%, #4F46E5 100%);
 }
 .ptr {
   position: absolute; top: -8rpx; width: 4rpx; height: 30rpx;
-  background: #E8ECF2; border-radius: 3rpx;
-  box-shadow: 0 0 0 6rpx rgba(232,236,242,0.15);
+  background: #1B1F3B; border-radius: 3rpx;
+  box-shadow: 0 0 0 6rpx rgba(27,31,59,0.1);
 }
 .gauge-labs {
   display: flex; justify-content: space-between;
-  font-size: 18rpx; color: #6B7480; margin-top: 12rpx;
+  font-size: 18rpx; color: #9CA3AF; margin-top: 12rpx;
   font-family: ui-monospace, Menlo, monospace;
 }
 
@@ -50,65 +80,95 @@
   margin-top: 18rpx;
 }
 .sig {
-  background: #1C232D;
-  border: 1rpx solid rgba(255,255,255,0.08);
-  border-radius: 10rpx;
-  padding: 14rpx 16rpx;
+  background: #F4F6FF;
+  border-radius: 14rpx; padding: 14rpx 16rpx;
   display: flex; flex-direction: column; gap: 4rpx;
 }
-.sig .n { font-size: 20rpx; color: #9AA4B2; }
+.sig .n { font-size: 20rpx; color: #6B7280; }
 .sig .v { display: flex; align-items: center; gap: 10rpx;
           font-family: ui-monospace, Menlo, monospace;
-          font-size: 24rpx; font-weight: 600; }
+          font-size: 24rpx; font-weight: 600; color: #1B1F3B; }
 .sig .v .dot { width: 12rpx; height: 12rpx; border-radius: 50%; }
 
-/* exposure bar */
+/* ============ exposure bar ============ */
 .expo-bar {
-  display: flex; height: 56rpx; border-radius: 12rpx; overflow: hidden;
+  display: flex; height: 56rpx; border-radius: 14rpx; overflow: hidden;
   margin-bottom: 16rpx;
+  box-shadow: inset 0 0 0 1rpx rgba(255,255,255,0.4);
 }
 .expo-bar .seg {
   display: flex; align-items: center; justify-content: center;
   font-family: ui-monospace, Menlo, monospace;
-  font-size: 18rpx; font-weight: 600; color: #0E1116;
+  font-size: 18rpx; font-weight: 700; color: #FFFFFF;
 }
-.expo-bar .compute { background: #8B7FE8; }
-.expo-bar .cloud   { background: #2DD4BF; }
-.expo-bar .app     { background: #F08A6B; }
-.expo-bar .power   { background: #E5A84B; }
-.expo-bar .cash    { background: #566072; color: #cdd5e2; }
+.expo-bar .compute { background: #5468FF; }
+.expo-bar .cloud   { background: #7C8CFF; }
+.expo-bar .app     { background: #A78BFA; }
+.expo-bar .power   { background: #F59E0B; }
+.expo-bar .cash    { background: #CBD5E1; color: #1B1F3B; }
+
+.legend {
+  display: flex; flex-wrap: wrap; gap: 14rpx 22rpx;
+  margin-bottom: 18rpx;
+}
+.legend .lg { display: flex; align-items: center; gap: 8rpx;
+              font-size: 20rpx; color: #6B7280; }
+.legend .lg .lg-d { width: 14rpx; height: 14rpx; border-radius: 4rpx; }
 
 .conc {
   display: grid; grid-template-columns: 1fr 1fr 1fr;
   gap: 16rpx; padding-top: 18rpx;
-  border-top: 1rpx solid rgba(255,255,255,0.08);
+  border-top: 1rpx solid #E5E7EF;
 }
 .conc .b { text-align: center; display: flex; flex-direction: column; gap: 6rpx; }
-.conc .b .v { font-size: 32rpx; font-weight: 600; }
-.conc .b .l { font-size: 20rpx; color: #9AA4B2; }
+.conc .b .v { font-size: 34rpx; font-weight: 700; color: #1B1F3B; }
+.conc .b .l { font-size: 20rpx; color: #6B7280; }
 
 .alert {
   display: flex; gap: 14rpx; margin-top: 18rpx;
-  background: rgba(242,109,109,0.08);
-  border: 1rpx solid rgba(242,109,109,0.28);
-  border-radius: 10rpx; padding: 14rpx 16rpx;
+  background: #FEF2F2;
+  border: 1rpx solid #FECACA;
+  border-radius: 14rpx; padding: 14rpx 16rpx;
 }
-.alert .a-i { color: #f3a3a3; font-size: 28rpx; }
-.alert text { color: #f3a3a3; font-size: 22rpx; line-height: 1.5; }
-.alert .a-b { color: #ffc0c0; font-weight: 600; }
+.alert .a-i { color: #EF4444; font-size: 28rpx; }
+.alert text { color: #991B1B; font-size: 22rpx; line-height: 1.5; }
+.alert .a-b { color: #DC2626; font-weight: 700; }
 
-/* wallet */
-.wallet-row { font-size: 26rpx; margin-bottom: 8rpx; }
-.hint { display: block; font-size: 20rpx; color: #6B7480; margin-top: 14rpx; }
+/* ============ wallet ============ */
+.wallet-on {
+  display: flex; align-items: center; gap: 14rpx;
+  padding: 14rpx 16rpx; border-radius: 14rpx;
+  background: #F4F6FF;
+}
+.wallet-on .wo-dot {
+  width: 56rpx; height: 56rpx; border-radius: 18rpx;
+  background: linear-gradient(135deg, #5468FF, #7C8CFF);
+}
+.wallet-on .wo-name {
+  display: block; font-weight: 700; font-size: 26rpx; color: #1B1F3B;
+}
+.wallet-on .wo-addr {
+  display: block; font-family: ui-monospace, Menlo, monospace;
+  font-size: 18rpx; color: #6B7280; word-break: break-all; margin-top: 4rpx;
+}
+.hint { display: block; font-size: 20rpx; color: #9CA3AF; margin-top: 14rpx; }
 .err {
   margin-top: 12rpx; padding: 10rpx 14rpx;
-  font-size: 22rpx; color: #f3a3a3;
-  background: rgba(242,109,109,0.07);
-  border: 1rpx solid rgba(242,109,109,0.25);
-  border-radius: 10rpx;
+  font-size: 22rpx; color: #991B1B;
+  background: #FEF2F2;
+  border: 1rpx solid #FECACA;
+  border-radius: 12rpx;
 }
 
+/* footer line */
 .foot {
-  margin-top: 8rpx; font-size: 22rpx; color: #6B7480;
-  display: flex; align-items: center; gap: 10rpx;
+  margin-top: 16rpx; padding: 0 8rpx;
+  font-size: 22rpx; color: #9CA3AF;
+  display: flex; align-items: center; gap: 12rpx;
+}
+
+/* loading state */
+.page-loading {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; color: #6B7280;
 }

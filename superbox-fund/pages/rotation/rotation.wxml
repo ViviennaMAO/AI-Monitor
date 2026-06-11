@@ -1,160 +1,185 @@
 <view class="page" wx:if="{{ready}}">
 
-  <!-- topbar -->
-  <view class="topbar">
-    <text class="brand">调仓引擎</text>
-    <text class="sub">L3.5 · 三道闸</text>
-    <view class="health {{status==='live' ? 'live' : ''}}">
-      <view class="dot"></view>
-      <text>{{status === 'live' ? 'LIVE' : 'DEMO'}}</text>
+  <!-- HERO -->
+  <view class="hero">
+    <view class="topbar">
+      <text class="brand">调仓引擎</text>
+      <text class="sub">L3.5 · 三道闸</text>
+      <view class="health {{status==='live' ? 'live' : ''}}">
+        <view class="dot"></view>
+        <text>{{status === 'live' ? 'LIVE' : 'DEMO'}}</text>
+      </view>
     </view>
+    <view class="hero-gates">
+      <view class="hg"><text class="hg-n">1</text><text class="hg-l">触发</text></view>
+      <view class="hg-arrow">→</view>
+      <view class="hg"><text class="hg-n">2</text><text class="hg-l">候选</text></view>
+      <view class="hg-arrow">→</view>
+      <view class="hg"><text class="hg-n">3</text><text class="hg-l">验证</text></view>
+    </view>
+    <text class="hero-tip">换出有据 · 换入有名单 · 不自动执行</text>
   </view>
 
-  <!-- three gates -->
-  <view class="card">
-    <view class="card-h">
-      <text class="k">规则</text>
-      <text class="t">换出有据 · 换入有名单</text>
-    </view>
-    <view class="rules">
-      <view class="rule">
-        <text class="g">闸 1 · 触发</text>
-        <text class="d">健康度 &lt; 70、止损触发器命中、或所在段超配 — 才进入"换出"评估</text>
+  <!-- BODY -->
+  <view class="body">
+
+    <!-- gate rules -->
+    <view class="card">
+      <view class="card-h">
+        <text class="k">规则</text>
+        <text class="t">三道闸校验</text>
       </view>
       <view class="rule">
-        <text class="g">闸 2 · 候选</text>
-        <text class="d">备用池按段位匹配,就绪度 ≥ 70、催化临近者优先;优选改善分散的低 β</text>
+        <view class="r-num">1</view>
+        <view>
+          <text class="r-g">触发</text>
+          <text class="r-d">健康度 &lt; 70 · 触发器命中 · 段超配</text>
+        </view>
       </view>
       <view class="rule">
-        <text class="g">闸 3 · 验证</text>
-        <text class="d">单票 ≤ 18% · 前三大 ≤ 40% · 不抬高 Capex-β 标的数 — 否则不建议执行</text>
+        <view class="r-num">2</view>
+        <view>
+          <text class="r-g">候选</text>
+          <text class="r-d">备用池就绪 ≥ 70 · 段位匹配 · 优选低 β</text>
+        </view>
+      </view>
+      <view class="rule">
+        <view class="r-num">3</view>
+        <view>
+          <text class="r-g">验证</text>
+          <text class="r-d">单票 ≤ 18% · 前三大 ≤ 40% · Capex-β 不抬高</text>
+        </view>
       </view>
     </view>
-  </view>
 
-  <!-- auto-suggestions -->
-  <view class="card" wx:if="{{suggestions.length}}">
-    <view class="card-h">
-      <text class="k">自动建议</text>
-      <text class="t">供决策参考 · 人工拍板</text>
-    </view>
-    <view class="sug" wx:for="{{suggestions}}" wx:key="text">
-      <text class="ic">{{item.icon}}</text>
-      <view class="sg-body">
-        <text class="tx">{{item.text}}</text>
-        <text class="why">{{item.why}}</text>
+    <!-- auto suggestions -->
+    <view class="card" wx:if="{{suggestions.length}}">
+      <view class="card-h">
+        <text class="k">自动建议</text>
+        <text class="t">人工拍板</text>
       </view>
-      <button class="btn-ghost" size="mini"
-              data-out="{{item.out}}" data-in="{{item.in}}"
-              bindtap="onLoadSuggestion">载入</button>
-    </view>
-  </view>
-
-  <!-- simulator -->
-  <view class="card">
-    <view class="card-h">
-      <text class="k">模拟器</text>
-      <text class="t">不自动执行</text>
-      <text class="n">先看影响 · 再决定</text>
+      <view class="sug" wx:for="{{suggestions}}" wx:key="text">
+        <view class="sug-ic">{{item.icon}}</view>
+        <view class="sg-body">
+          <text class="tx">{{item.text}}</text>
+          <text class="why">{{item.why}}</text>
+        </view>
+        <view class="sug-btn" data-out="{{item.out}}" data-in="{{item.in}}" bindtap="onLoadSuggestion">载入</view>
+      </view>
     </view>
 
-    <view class="simctl">
-      <text class="lab">换出</text>
-      <picker mode="selector" range-key="display" range="{{outOptions}}"
-              value="{{outIndex}}" bindchange="onSelOut">
-        <view class="picker">{{outOptions[outIndex].display}}</view>
-      </picker>
-      <text class="arrow">→</text>
-      <text class="lab">换入</text>
-      <picker mode="selector" range-key="display" range="{{inOptions}}"
-              value="{{inIndex}}" bindchange="onSelIn">
-        <view class="picker">{{inOptions[inIndex].display}}</view>
-      </picker>
-    </view>
-    <button class="btn" bindtap="onRunSim">模拟调仓</button>
+    <!-- simulator -->
+    <view class="card">
+      <view class="card-h">
+        <text class="k">模拟器</text>
+        <text class="t">不自动执行</text>
+        <text class="n">先看影响</text>
+      </view>
 
-    <view wx:if="{{simResult}}" class="simres">
-      <!-- before / after table -->
-      <view class="ba">
-        <view class="c" wx:for="{{simResult.cells}}" wx:key="label">
-          <text class="l">{{item.label}}</text>
-          <view class="v">
-            <text class="a">{{item.before}}{{item.unit}}</text>
-            <text> → </text>
-            <text class="{{item.tone}}" style="font-weight:600">{{item.after}}{{item.unit}}</text>
+      <view class="simctl">
+        <view class="sel-wrap">
+          <text class="sw-lab">换出</text>
+          <picker mode="selector" range-key="display" range="{{outOptions}}"
+                  value="{{outIndex}}" bindchange="onSelOut">
+            <view class="picker">{{outOptions[outIndex].display}}</view>
+          </picker>
+        </view>
+        <view class="arrow-row">↓</view>
+        <view class="sel-wrap">
+          <text class="sw-lab">换入</text>
+          <picker mode="selector" range-key="display" range="{{inOptions}}"
+                  value="{{inIndex}}" bindchange="onSelIn">
+            <view class="picker">{{inOptions[inIndex].display}}</view>
+          </picker>
+        </view>
+      </view>
+      <button class="btn" bindtap="onRunSim">模拟调仓</button>
+
+      <view wx:if="{{simResult}}" class="simres">
+        <!-- before / after table -->
+        <view class="ba">
+          <view class="c" wx:for="{{simResult.cells}}" wx:key="label">
+            <text class="l">{{item.label}}</text>
+            <view class="v">
+              <text class="a">{{item.before}}{{item.unit}}</text>
+              <text class="arr">→</text>
+              <text class="{{item.tone}}" style="font-weight:700">{{item.after}}{{item.unit}}</text>
+            </view>
           </view>
         </view>
-      </view>
 
-      <!-- gates -->
-      <view class="gates">
-        <view class="gate {{simResult.gates.g1 ? 'ok' : 'na'}}">
-          <text class="gh">闸1 · 触发</text>
-          <text>{{simResult.gates.g1Txt}}</text>
+        <!-- gates -->
+        <view class="gates">
+          <view class="gate {{simResult.gates.g1 ? 'ok' : 'na'}}">
+            <text class="gh">闸 1 · 触发</text>
+            <text>{{simResult.gates.g1Txt}}</text>
+          </view>
+          <view class="gate {{simResult.gates.g2 ? 'ok' : 'na'}}">
+            <text class="gh">闸 2 · 候选</text>
+            <text>{{simResult.gates.g2Txt}}</text>
+          </view>
+          <view class="gate {{simResult.gates.g3 ? 'ok' : 'no'}}">
+            <text class="gh">闸 3 · 验证</text>
+            <text>{{simResult.gates.g3Txt}}</text>
+          </view>
         </view>
-        <view class="gate {{simResult.gates.g2 ? 'ok' : 'na'}}">
-          <text class="gh">闸2 · 候选</text>
-          <text>{{simResult.gates.g2Txt}}</text>
-        </view>
-        <view class="gate {{simResult.gates.g3 ? 'ok' : 'no'}}">
-          <text class="gh">闸3 · 验证</text>
-          <text>{{simResult.gates.g3Txt}}</text>
-        </view>
-      </view>
 
-      <view class="verdict {{simResult.verdict.tone}}">
-        <text>{{simResult.verdict.txt}}</text>
-        <text wx:if="{{!simResult.gates.g3}}" class="neg"> · 闸3 未通过,不建议执行</text>
-      </view>
-
-      <!-- sign + submit (Luffa wallet) -->
-      <view class="sign-row">
-        <button class="btn" bindtap="onSignRotation" disabled="{{signing || !simResult.ok}}">
-          {{signing ? '签署中…' : '由 PM 签署调仓单'}}
-        </button>
-        <text class="hint" wx:if="{{!simResult.ok}}">三闸未全通过 · 仅供模拟</text>
-        <text class="hint" wx:elif="{{!wallet}}">需先在驾驶舱连接 Luffa 钱包</text>
-      </view>
-      <view wx:if="{{signedTicket}}" class="ticket">
-        <text class="b">已签署调仓单 · {{signedTicket.fingerprint}}</text>
-        <text class="mono dim">签名:{{signedTicket.sig}}</text>
-        <text class="hint">人在回路 · 交易由交易台执行,本程序不下单</text>
-      </view>
-      <view wx:if="{{signError}}" class="err">{{signError}}</view>
-    </view>
-  </view>
-
-  <!-- bench pool -->
-  <view class="card">
-    <view class="card-h">
-      <text class="k">备用池</text>
-      <text class="t">候补 · {{bench.length}} 只</text>
-    </view>
-    <view class="bench-list">
-      <view class="bc" wx:for="{{bench}}" wx:key="ticker">
-        <view class="lc" style="background: {{item.color}}"></view>
-        <view class="top">
-          <text class="tk">{{item.ticker}}</text>
-          <text class="nm">{{item.name}}</text>
-          <view class="cb-tag" style="background: {{item.cbBg}}; color: {{item.cbColor}}">β {{item.cbTxt}}</view>
+        <view class="verdict {{simResult.verdict.tone}}">
+          <text>{{simResult.verdict.txt}}</text>
+          <text wx:if="{{!simResult.gates.g3}}" class="neg"> · 闸3 未通过</text>
         </view>
-        <view class="ready">
-          <view class="tr"><view style="width:{{item.readiness}}%; background:{{item.rcolor}}"></view></view>
-          <text class="num" style="font-size:18rpx;color:#9AA4B2">就绪 {{item.readiness}}</text>
+
+        <view class="sign-row">
+          <button class="btn" bindtap="onSignRotation" disabled="{{signing || !simResult.ok}}">
+            {{signing ? '签署中…' : '由 PM 签署调仓单'}}
+          </button>
+          <text class="hint" wx:if="{{!simResult.ok}}">三闸未全通过 · 仅供模拟</text>
+          <text class="hint" wx:elif="{{!wallet}}">需先在驾驶舱连接 Luffa 钱包</text>
         </view>
-        <text class="th">{{item.thesis}}</text>
-        <text class="meta"><text style="color:#2DD4BF;font-weight:600">催化:</text>{{item.catalyst}}</text>
-        <text class="trig">⤷ 入选触发:{{item.promotion_trigger}}</text>
+        <view wx:if="{{signedTicket}}" class="ticket">
+          <view class="t-head">
+            <view class="t-dot"></view>
+            <text class="t-h">已签署调仓单 · {{signedTicket.fingerprint}}</text>
+          </view>
+          <text class="mono dim">签名:{{signedTicket.sig}}</text>
+          <text class="hint">人在回路 · 交易由交易台执行</text>
+        </view>
+        <view wx:if="{{signError}}" class="err">{{signError}}</view>
       </view>
     </view>
-  </view>
 
-  <view class="foot">
-    <text>数据截至 {{asOf}}</text>
-    <text class="demo-tag" wx:if="{{status !== 'live'}}">演示数据</text>
+    <!-- bench -->
+    <view class="card">
+      <view class="card-h">
+        <text class="k">备用池</text>
+        <text class="t">候补 {{bench.length}} 只</text>
+      </view>
+      <view class="bench-list">
+        <view class="bc" wx:for="{{bench}}" wx:key="ticker">
+          <view class="bc-top">
+            <view class="bc-tag" style="background: {{item.color}}"></view>
+            <text class="tk">{{item.ticker}}</text>
+            <text class="nm">{{item.name}}</text>
+            <view class="cb-tag" style="background: {{item.cbBg}}; color: {{item.cbColor}}">β {{item.cbTxt}}</view>
+          </view>
+          <view class="ready">
+            <view class="tr"><view style="width:{{item.readiness}}%; background:{{item.rcolor}}"></view></view>
+            <text class="num readiness-num">就绪 {{item.readiness}}</text>
+          </view>
+          <text class="th">{{item.thesis}}</text>
+          <text class="meta"><text class="meta-b">催化:</text>{{item.catalyst}}</text>
+          <text class="trig">⤷ {{item.promotion_trigger}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="foot">
+      <text>数据截至 {{asOf}}</text>
+      <text class="demo-tag" wx:if="{{status !== 'live'}}">演示数据</text>
+    </view>
   </view>
 </view>
 
-<view class="page" wx:else>
+<view class="page-loading" wx:else>
   <text class="muted">加载中…</text>
 </view>

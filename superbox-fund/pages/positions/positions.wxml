@@ -1,137 +1,157 @@
 <view class="page" wx:if="{{ready}}">
 
-  <!-- topbar (compact) -->
-  <view class="topbar">
-    <text class="brand">持仓 · L3</text>
-    <text class="sub">{{filteredCount}} / {{totalCount}} 标的</text>
-    <view class="health {{status==='live' ? 'live' : ''}}">
-      <view class="dot"></view>
-      <text>{{status === 'live' ? 'LIVE' : 'DEMO'}}</text>
+  <!-- HERO -->
+  <view class="hero">
+    <view class="topbar">
+      <text class="brand">持仓 · L3</text>
+      <text class="sub">{{filteredCount}} / {{totalCount}} 标的</text>
+      <view class="health {{status==='live' ? 'live' : ''}}">
+        <view class="dot"></view>
+        <text>{{status === 'live' ? 'LIVE' : 'DEMO'}}</text>
+      </view>
     </view>
+
+    <view class="hero-stats">
+      <view class="hs">
+        <text class="hs-lab">活跃预警</text>
+        <text class="hs-val num">{{fireCount}} / {{watchCount}}</text>
+        <text class="hs-sub">触发 / 观察</text>
+      </view>
+      <view class="hs">
+        <text class="hs-lab">熔断状态</text>
+        <text class="hs-val num">{{cbSummary}}</text>
+        <text class="hs-sub">回撤 · 相关 · IC</text>
+      </view>
+    </view>
+
+    <!-- segment filter chips -->
+    <scroll-view scroll-x="true" class="chips">
+      <view class="chip {{filter === 'all'     ? 'on' : ''}}" data-f="all"     bindtap="onFilter">全部 {{totalCount}}</view>
+      <view class="chip {{filter === 'compute' ? 'on' : ''}}" data-f="compute" bindtap="onFilter">算力</view>
+      <view class="chip {{filter === 'cloud'   ? 'on' : ''}}" data-f="cloud"   bindtap="onFilter">云/模型</view>
+      <view class="chip {{filter === 'app'     ? 'on' : ''}}" data-f="app"     bindtap="onFilter">应用</view>
+      <view class="chip {{filter === 'power'   ? 'on' : ''}}" data-f="power"   bindtap="onFilter">供应链</view>
+    </scroll-view>
   </view>
 
-  <!-- segment filter chips -->
-  <scroll-view scroll-x="true" class="chips">
-    <view class="chip {{filter === 'all'     ? 'on' : ''}}" data-f="all"     bindtap="onFilter">全部 {{totalCount}}</view>
-    <view class="chip {{filter === 'compute' ? 'on' : ''}}" data-f="compute" bindtap="onFilter">算力</view>
-    <view class="chip {{filter === 'cloud'   ? 'on' : ''}}" data-f="cloud"   bindtap="onFilter">云/模型</view>
-    <view class="chip {{filter === 'app'     ? 'on' : ''}}" data-f="app"     bindtap="onFilter">应用</view>
-    <view class="chip {{filter === 'power'   ? 'on' : ''}}" data-f="power"   bindtap="onFilter">供应链</view>
-  </scroll-view>
+  <!-- BODY -->
+  <view class="body">
 
-  <!-- stock grid -->
-  <view class="grid">
-    <view class="stk {{item.alertCls}} {{item.ticker === selected ? 'sel' : ''}}"
-          wx:for="{{stocks}}" wx:key="ticker"
-          data-tk="{{item.ticker}}" bindtap="onSelect">
-      <view class="lcolor" style="background: {{item.color}}"></view>
-      <view wx:if="{{item.alertDot}}" class="abadge" style="background: {{item.alertDot}}"></view>
-      <view class="row1">
-        <text class="tk">{{item.ticker}}</text>
-        <text class="wt num">{{item.wtPct}}%</text>
-      </view>
-      <text class="chg num {{item.up ? 'pos' : 'neg'}}">{{item.chgTxt}}</text>
-      <view class="hbar"><view style="width: {{item.health}}%; background: {{item.hcolor}}"></view></view>
-    </view>
-  </view>
-
-  <!-- detail panel -->
-  <view class="detail" wx:if="{{selectedStock}}">
-    <view class="hd">
-      <text class="tk">{{selectedStock.ticker}}</text>
-      <text class="name">{{selectedStock.name}}</text>
-      <view class="pill" style="background: {{selectedStock.colorBg}}; color: {{selectedStock.color}}">
-        {{selectedStock.layerName}}
-      </view>
-      <view class="wt">
-        <text class="b num">{{selectedStock.wtPct}}%</text>
-        <text class="s muted">组合权重</text>
+    <!-- stock grid -->
+    <view class="grid">
+      <view class="stk {{item.alertCls}} {{item.ticker === selected ? 'sel' : ''}}"
+            wx:for="{{stocks}}" wx:key="ticker"
+            data-tk="{{item.ticker}}" bindtap="onSelect">
+        <view class="lcolor" style="background: {{item.color}}"></view>
+        <view wx:if="{{item.alertDot}}" class="abadge" style="background: {{item.alertDot}}"></view>
+        <view class="row1">
+          <text class="tk">{{item.ticker}}</text>
+          <text class="wt num">{{item.wtPct}}%</text>
+        </view>
+        <text class="chg num {{item.up ? 'pos' : 'neg'}}">{{item.chgTxt}}</text>
+        <view class="hbar"><view style="width: {{item.health}}%; background: {{item.hcolor}}"></view></view>
+        <text class="h-num num">{{item.health}}</text>
       </view>
     </view>
 
-    <view class="blk">
-      <text class="bh">论点三支柱 · 为什么持有</text>
-      <view class="pillars">
-        <view class="pl" wx:for="{{selectedStock.pillars}}" wx:key="*this" wx:for-item="p">
-          <view class="pl-d"></view><text>{{p}}</text>
+    <!-- detail panel -->
+    <view class="detail card" wx:if="{{selectedStock}}">
+      <view class="hd">
+        <text class="tk">{{selectedStock.ticker}}</text>
+        <text class="name">{{selectedStock.name}}</text>
+        <view class="pill" style="background: {{selectedStock.colorBg}}; color: {{selectedStock.color}}">
+          {{selectedStock.layerName}}
+        </view>
+        <view class="wt">
+          <text class="b num">{{selectedStock.wtPct}}%</text>
+          <text class="s muted">权重</text>
+        </view>
+      </view>
+
+      <view class="blk">
+        <text class="bh">论点三支柱</text>
+        <view class="pillars">
+          <view class="pl" wx:for="{{selectedStock.pillars}}" wx:key="*this" wx:for-item="p">
+            <view class="pl-d"></view><text>{{p}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="blk">
+        <text class="bh">关键 KPI</text>
+        <view class="kpiline" wx:for="{{selectedStock.kpis}}" wx:key="label">
+          <text class="muted">{{item.label}}</text>
+          <text class="v num">{{item.value}}</text>
+        </view>
+      </view>
+
+      <view class="blk">
+        <text class="bh">论点健康度</text>
+        <view class="healthrow">
+          <view class="track"><view style="width: {{selectedStock.health}}%; background: {{selectedStock.hcolor}}"></view></view>
+          <text class="num h-big">{{selectedStock.health}}</text>
+        </view>
+        <text class="dim h-note">{{selectedStock.healthNote}}</text>
+      </view>
+
+      <view class="blk">
+        <text class="bh">止损 / 反转触发器</text>
+        <view class="trip"><text class="b">承认看错的条件:</text>{{selectedStock.tripwire}}</view>
+        <view class="monitor">
+          <text class="muted">监控:{{selectedStock.monitor.metric}}</text>
+          <text class="num">{{selectedStock.monitor.current}}{{selectedStock.monitor.unit}}
+                / {{selectedStock.monitor.threshold}}{{selectedStock.monitor.unit}}</text>
         </view>
       </view>
     </view>
 
-    <view class="blk">
-      <text class="bh">关键基本面 KPI</text>
-      <view class="kpiline" wx:for="{{selectedStock.kpis}}" wx:key="label">
-        <text class="muted">{{item.label}}</text>
-        <text class="v num">{{item.value}}</text>
+    <!-- circuit breakers -->
+    <view class="card">
+      <view class="card-h">
+        <text class="k">熔断 · CB</text>
+        <text class="t">组合熔断</text>
       </view>
-    </view>
-
-    <view class="blk">
-      <text class="bh">论点健康度</text>
-      <view class="healthrow">
-        <view class="track"><view style="width: {{selectedStock.health}}%; background: {{selectedStock.hcolor}}"></view></view>
-        <text class="num" style="font-weight:600">{{selectedStock.health}}</text>
-      </view>
-      <text class="dim" style="font-size:22rpx; display:block; margin-top:8rpx;">{{selectedStock.healthNote}}</text>
-    </view>
-
-    <view class="blk">
-      <text class="bh">止损 / 反转触发器(买入时预设)</text>
-      <view class="trip"><text class="b">承认看错的条件:</text>{{selectedStock.tripwire}}</view>
-      <view class="monitor">
-        <text class="muted">监控:{{selectedStock.monitor.metric}}</text>
-        <text class="num">{{selectedStock.monitor.current}}{{selectedStock.monitor.unit}}
-              / 阈值 {{selectedStock.monitor.threshold}}{{selectedStock.monitor.unit}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- circuit breakers -->
-  <view class="card">
-    <view class="card-h">
-      <text class="k">预警 / Circuit Breaker</text>
-      <text class="t">组合熔断</text>
-    </view>
-    <view class="cbrow">
-      <view class="cbx" wx:for="{{cbs}}" wx:key="key">
-        <text class="h">{{item.name}}</text>
-        <view class="st">
-          <view class="dot" style="background: {{item.color}}"></view>
-          <text>{{item.stateTxt}}</text>
+      <view class="cbrow">
+        <view class="cbx" wx:for="{{cbs}}" wx:key="key">
+          <text class="h">{{item.name}}</text>
+          <view class="st">
+            <view class="dot" style="background: {{item.color}}"></view>
+            <text>{{item.stateTxt}}</text>
+          </view>
+          <text class="lad">{{item.detail}}</text>
         </view>
-        <text class="lad">{{item.detail}}</text>
       </view>
     </view>
-  </view>
 
-  <!-- per-stock alerts -->
-  <view class="card" wx:if="{{stockAlerts.length}}">
-    <view class="card-h">
-      <text class="k">活跃预警</text>
-      <text class="t">{{fireCount}} 触发 · {{watchCount}} 观察</text>
-    </view>
-    <view class="ai {{item.cls}}" wx:for="{{stockAlerts}}" wx:key="ticker">
-      <text class="sev {{item.cls}}">{{item.sevTxt}}</text>
-      <view class="cond-wrap">
-        <text class="tk">{{item.ticker}}</text>
-        <text class="cond">{{item.metric}} {{item.cmp}}阈值</text>
-        <text class="sub muted">触发器:{{item.tripwire}}</text>
+    <!-- alerts -->
+    <view class="card" wx:if="{{stockAlerts.length}}">
+      <view class="card-h">
+        <text class="k">活跃预警</text>
+        <text class="t">{{fireCount}} 触发 · {{watchCount}} 观察</text>
       </view>
-      <view class="val">
-        <text style="color: {{item.cls === 'fire' ? '#F26D6D' : '#E5A84B'}}">{{item.current}}{{item.unit}}</text>
-        <text class="dim" style="font-size:18rpx">阈值 {{item.threshold}}{{item.unit}}</text>
+      <view class="ai {{item.cls}}" wx:for="{{stockAlerts}}" wx:key="ticker">
+        <text class="sev {{item.cls}}">{{item.sevTxt}}</text>
+        <view class="cond-wrap">
+          <text class="tk">{{item.ticker}}</text>
+          <text class="cond">{{item.metric}} {{item.cmp}}阈值</text>
+          <text class="sub muted">{{item.tripwire}}</text>
+        </view>
+        <view class="val">
+          <text style="color: {{item.cls === 'fire' ? '#EF4444' : '#F59E0B'}}">{{item.current}}{{item.unit}}</text>
+          <text class="dim val-thr">阈值 {{item.threshold}}{{item.unit}}</text>
+        </view>
+        <button class="push" data-out="{{item.ticker}}" data-in="{{item.pushTarget}}"
+                bindtap="onPushToRotation">推送到调仓 →</button>
       </view>
-      <button class="push" data-out="{{item.ticker}}" data-in="{{item.pushTarget}}"
-              bindtap="onPushToRotation">推送 →</button>
     </view>
-  </view>
 
-  <view class="foot">
-    <text>数据截至 {{asOf}}</text>
-    <text class="demo-tag" wx:if="{{status !== 'live'}}">演示数据</text>
+    <view class="foot">
+      <text>数据截至 {{asOf}}</text>
+      <text class="demo-tag" wx:if="{{status !== 'live'}}">演示数据</text>
+    </view>
   </view>
 </view>
 
-<view class="page" wx:else>
+<view class="page-loading" wx:else>
   <text class="muted">加载中…</text>
 </view>

@@ -1,7 +1,15 @@
-/* dark cockpit theme — mirrors luffa_superbox_fund.html palette */
+/* ============================================================
+   FinanceFlow-style palette — bright indigo + white cards
+   ============================================================
+   primary  #5468FF     deep   #3D52E0     soft   #7C8CFF
+   bg       #F4F6FF     card   #FFFFFF     ink    #1B1F3B
+   muted    #6B7280     line   #E5E7EF
+   pos      #10B981     neg    #EF4444     warn   #F59E0B
+============================================================ */
+
 page {
-  background: #0E1116;
-  color: #E8ECF2;
+  background: #F4F6FF;
+  color: #1B1F3B;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 26rpx;
   line-height: 1.5;
@@ -9,90 +17,125 @@ page {
 
 .page {
   min-height: 100vh;
-  padding: 28rpx 28rpx 56rpx;
+  padding: 0 0 56rpx;
   box-sizing: border-box;
 }
 
-/* ---------- text ---------- */
+/* ---------- typography ---------- */
 .num   { font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
          font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-.muted { color: #9AA4B2; }
-.dim   { color: #6B7480; }
-.pos   { color: #4ADE80; }
-.neg   { color: #F26D6D; }
-.warn  { color: #E5A84B; }
+.muted { color: #6B7280; }
+.dim   { color: #9CA3AF; }
+.pos   { color: #10B981; }
+.neg   { color: #EF4444; }
+.warn  { color: #F59E0B; }
 .tk    { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; }
 
-/* ---------- topbar ---------- */
+/* ---------- hero gradient section (page top) ---------- */
+.hero {
+  background: linear-gradient(135deg, #5468FF 0%, #3D52E0 100%);
+  padding: 36rpx 32rpx 80rpx;
+  color: #FFFFFF;
+  border-radius: 0 0 36rpx 36rpx;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -100rpx; right: -120rpx;
+  width: 360rpx; height: 360rpx; border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -140rpx; left: -80rpx;
+  width: 280rpx; height: 280rpx; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.hero > * { position: relative; z-index: 1; }
+
+/* topbar inside hero */
 .topbar {
   display: flex; align-items: center; gap: 14rpx;
-  padding: 18rpx 8rpx 8rpx;
-}
-.topbar .brand   { font-size: 26rpx; font-weight: 600; letter-spacing: 0.02em; }
-.topbar .sub     { color: #9AA4B2; font-size: 22rpx; margin-left: 4rpx; }
-.topbar .health  { margin-left: auto; display: flex; align-items: center; gap: 10rpx;
-                   font-family: ui-monospace, Menlo, monospace; font-size: 20rpx;
-                   color: #9AA4B2; background: #1C232D;
-                   border: 1rpx solid rgba(255,255,255,0.14);
-                   padding: 6rpx 16rpx; border-radius: 8rpx; }
-.topbar .health .dot { width: 12rpx; height: 12rpx; border-radius: 50%;
-                        background: #E5A84B; box-shadow: 0 0 0 6rpx rgba(229,168,75,0.15); }
-.topbar .health.live { color: #4ADE80; }
-.topbar .health.live .dot { background: #4ADE80; box-shadow: 0 0 0 6rpx rgba(74,222,128,0.15); }
-
-/* ---------- SFC compliance ribbon ---------- */
-.sfc {
-  display: flex; flex-direction: column; gap: 6rpx;
-  background: rgba(45,212,191,0.05);
-  border: 1rpx solid rgba(45,212,191,0.18);
-  border-radius: 16rpx;
-  padding: 18rpx 22rpx;
   margin-bottom: 24rpx;
 }
-.sfc .sfc-h { display: flex; align-items: center; gap: 12rpx; font-size: 24rpx; color: #E8ECF2; }
-.sfc .sfc-h .badge { background: linear-gradient(135deg,#2DD4BF,#4ADE80); color: #0E1116;
-                     font-weight: 700; font-size: 20rpx; padding: 6rpx 12rpx; border-radius: 7rpx;
-                     font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.06em; }
-.sfc .sfc-h b { color: #2DD4BF; font-weight: 600; }
-.sfc .sfc-s { font-size: 22rpx; color: #9AA4B2;
-              font-family: ui-monospace, Menlo, monospace; }
+.topbar .brand { font-size: 28rpx; font-weight: 700; letter-spacing: 0.02em; color: #FFFFFF; }
+.topbar .sub   { color: rgba(255,255,255,0.7); font-size: 22rpx; margin-left: 4rpx; }
+.topbar .health{
+  margin-left: auto; display: flex; align-items: center; gap: 10rpx;
+  font-family: ui-monospace, Menlo, monospace; font-size: 20rpx;
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.15);
+  border: 1rpx solid rgba(255,255,255,0.25);
+  padding: 8rpx 18rpx; border-radius: 24rpx;
+}
+.topbar .health .dot { width: 12rpx; height: 12rpx; border-radius: 50%;
+                        background: #FBBF24; box-shadow: 0 0 0 6rpx rgba(251,191,36,0.25); }
+.topbar .health.live { color: #FFFFFF; }
+.topbar .health.live .dot { background: #34D399; box-shadow: 0 0 0 6rpx rgba(52,211,153,0.25); }
+
+/* ---------- body container — sits on top of hero ---------- */
+.body {
+  padding: 0 28rpx;
+  margin-top: -56rpx;  /* slide up into hero gradient */
+  position: relative; z-index: 2;
+}
 
 /* ---------- card ---------- */
 .card {
-  background: #161B22;
-  border: 1rpx solid rgba(255,255,255,0.08);
-  border-radius: 16rpx;
-  padding: 24rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx;
   margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 32rpx rgba(84, 104, 255, 0.08);
 }
 .card-h {
-  display: flex; align-items: baseline; gap: 14rpx; margin-bottom: 16rpx;
+  display: flex; align-items: baseline; gap: 14rpx; margin-bottom: 20rpx;
 }
 .card-h .k { font-family: ui-monospace, Menlo, monospace; font-size: 20rpx;
-             color: #2DD4BF; letter-spacing: 0.06em; }
-.card-h .t { font-size: 28rpx; font-weight: 600; }
-.card-h .n { margin-left: auto; font-size: 20rpx; color: #6B7480; }
+             color: #5468FF; letter-spacing: 0.06em; font-weight: 600; }
+.card-h .t { font-size: 30rpx; font-weight: 700; color: #1B1F3B; }
+.card-h .n { margin-left: auto; font-size: 20rpx; color: #9CA3AF; }
+
+/* ---------- SFC compliance pill ---------- */
+.sfc {
+  display: flex; flex-direction: column; gap: 6rpx;
+  background: rgba(255,255,255,0.14);
+  border: 1rpx solid rgba(255,255,255,0.25);
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 8rpx;
+}
+.sfc .sfc-h { display: flex; align-items: center; gap: 12rpx; font-size: 22rpx; color: #FFFFFF; }
+.sfc .sfc-h .badge {
+  background: #FFFFFF; color: #5468FF;
+  font-weight: 700; font-size: 18rpx; padding: 6rpx 12rpx; border-radius: 7rpx;
+  font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.06em;
+}
+.sfc .sfc-s { font-size: 20rpx; color: rgba(255,255,255,0.7);
+              font-family: ui-monospace, Menlo, monospace; }
 
 /* ---------- buttons ---------- */
 .btn {
   display: inline-block; text-align: center;
-  font-size: 24rpx; font-weight: 600;
-  padding: 16rpx 24rpx; border-radius: 12rpx;
-  background: #2DD4BF; color: #0E1116; border: none;
+  font-size: 26rpx; font-weight: 600;
+  padding: 22rpx 24rpx; border-radius: 16rpx;
+  background: linear-gradient(135deg, #5468FF, #3D52E0);
+  color: #FFFFFF; border: none;
+  box-shadow: 0 8rpx 20rpx rgba(84,104,255,0.3);
 }
 .btn-ghost {
-  background: transparent; color: #2DD4BF;
-  border: 1rpx solid #2DD4BF;
+  background: transparent; color: #5468FF;
+  border: 2rpx solid #5468FF; box-shadow: none;
 }
-.btn[disabled], .btn-ghost[disabled] { opacity: 0.4; }
+.btn[disabled], .btn-ghost[disabled] {
+  opacity: 0.4; box-shadow: none;
+}
 
 /* ---------- demo data tag ---------- */
 .demo-tag {
-  font-family: ui-monospace, Menlo, monospace; font-size: 18rpx; color: #E5A84B;
-  background: rgba(229,168,75,0.07);
-  border: 1rpx solid rgba(229,168,75,0.4);
+  font-family: ui-monospace, Menlo, monospace; font-size: 18rpx; color: #F59E0B;
+  background: rgba(245,158,11,0.1);
+  border: 1rpx solid rgba(245,158,11,0.35);
   padding: 4rpx 12rpx; border-radius: 7rpx;
 }
 
 /* ---------- divider ---------- */
-.hr { height: 1rpx; background: rgba(255,255,255,0.08); margin: 18rpx 0; }
+.hr { height: 1rpx; background: #E5E7EF; margin: 18rpx 0; }
