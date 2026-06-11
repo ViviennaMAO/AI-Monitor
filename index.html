@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luffa SuperBox · AI 生态基金驾驶舱</title>
+<title>AI 生态基金 · 沙盒驾驶舱</title>
 <style>
   :root{
     --ink:#0E1116; --panel:#161B22; --panel2:#1C232D;
@@ -40,19 +40,18 @@
     box-shadow:0 0 0 3px rgba(229,168,75,.15)}
   .health-pill.live{color:var(--green)} .health-pill.live .hpdot{background:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.15)}
 
-  /* SFC compliance ribbon */
-  .sfc{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:18px 0 0;
+  /* sandbox notice ribbon */
+  .sbx{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:18px 0 0;
     background:linear-gradient(180deg,rgba(45,212,191,.05),rgba(45,212,191,.02));
     border:1px solid rgba(45,212,191,.18);border-radius:12px;padding:13px 16px}
-  .sfc-l{display:flex;align-items:center;gap:13px;flex:1;min-width:280px}
-  .sfc-badge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;
+  .sbx-l{display:flex;align-items:center;gap:13px;flex:1;min-width:280px}
+  .sbx-badge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;
     color:#0E1116;background:linear-gradient(135deg,#2DD4BF,#4ADE80);padding:5px 10px;border-radius:6px}
-  .sfc-h{font-size:13px;line-height:1.45;color:var(--t1)}
-  .sfc-h b{font-weight:600;color:var(--teal)}
-  .sfc-s{font-size:11.5px;color:var(--t2);margin-top:3px;font-family:var(--mono)}
-  .sfc-s b{color:var(--t1);font-weight:600}
-  .sfc-r{display:flex;gap:8px;flex-wrap:wrap}
-  .sfc-tag{font-family:var(--mono);font-size:11px;color:var(--t2);background:var(--panel2);
+  .sbx-h{font-size:13px;line-height:1.45;color:var(--t1)}
+  .sbx-h b{font-weight:600;color:var(--teal)}
+  .sbx-s{font-size:11.5px;color:var(--t2);margin-top:3px;font-family:var(--mono)}
+  .sbx-r{display:flex;gap:8px;flex-wrap:wrap}
+  .sbx-tag{font-family:var(--mono);font-size:11px;color:var(--t2);background:var(--panel2);
     border:1px solid var(--line);padding:4px 10px;border-radius:5px}
 
   /* kpi row */
@@ -284,9 +283,9 @@
 
 <div class="topbar"><div class="wrap">
   <div class="brand">
-    <div class="logo">L</div>
-    <b>LUFFA&nbsp;SUPERBOX</b>
-    <span class="sub">AI 生态基金驾驶舱</span>
+    <div class="logo">∑</div>
+    <b>AI&nbsp;ECO&nbsp;·&nbsp;SANDBOX</b>
+    <span class="sub">AI 生态基金 · 教学沙盒</span>
   </div>
   <span class="health-pill" id="modelHealth" title="model_health.status">
     <span class="hpdot"></span><span class="hptxt">DEMO · 待接入</span>
@@ -296,18 +295,18 @@
 
 <div class="wrap">
 
-  <!-- SFC / Luffa HK compliance ribbon -->
-  <div class="sfc">
-    <div class="sfc-l">
-      <span class="sfc-badge">SFC</span>
+  <!-- sandbox notice -->
+  <div class="sbx">
+    <div class="sbx-l">
+      <span class="sbx-badge">EDU</span>
       <div>
-        <div class="sfc-h">由 <b>Luffa 香港</b> 持牌实体托管 · 证监会 1/4/9 号牌(资产管理 / 就证券提供意见 / 证券交易)</div>
-        <div class="sfc-s">基金:<b>Luffa AI Ecosystem Fund · LAIF-I</b> · 合格投资者(PI)开放,本看板不构成要约或邀约</div>
+        <div class="sbx-h"><b>教学沙盒 · 非投资建议</b> — 展示「自上而下气候门控 + 四段产业链 + 三道闸调仓」方法论的结构与交互</div>
+        <div class="sbx-s">本工具不接受任何资金 / 不下单 / 不向任何用户作出投资推荐</div>
       </div>
     </div>
-    <div class="sfc-r">
-      <span class="sfc-tag">JSON 契约 7/7 就绪</span>
-      <span class="sfc-tag">human-in-the-loop</span>
+    <div class="sbx-r">
+      <span class="sbx-tag">JSON 契约 7/7 就绪</span>
+      <span class="sbx-tag">human-in-the-loop</span>
     </div>
   </div>
 
@@ -474,9 +473,9 @@
 
   <footer>
     <p><b>方法论:</b>自上而下、宏观气候门控的四段全产业链布局(算力 → 云/模型 → 应用 → 电力供应链)。L1 决定整体仓位与 Beta,L2 量化隐藏相关性,L3 逐标的跟踪论点健康度与止损触发器,L4 用归因与回测做诚实复盘。</p>
-    <p><b>诚实声明:</b>本看板所有净值、回测、KPI、健康度均为<b>演示数据</b>,用于展示驾驶舱结构与交互。真实使用须在 SuperBox 接入真实行情与基本面数据源后重算。回测存在前视偏误与幸存者偏差风险。本工具不构成投资建议,作者非持牌投资顾问。</p>
-    <p><b>合规框架:</b>本基金由 Luffa 香港(持牌实体)依香港证监会 (SFC) 第 1 / 4 / 9 类受规管活动持牌经营 — 证券交易 / 就证券提供意见 / 提供资产管理。所有调仓须经投资经理人工审核,人在回路;熔断为提示,不自动执行。</p>
-    <p class="dim">Luffa SuperBox · 演示构建 · 仅供 PI 合格投资者参考 · 不构成要约或邀约</p>
+    <p><b>诚实声明:</b>本看板所有净值、回测、KPI、健康度均为<b>演示数据</b>,仅用于展示驾驶舱结构与交互。回测存在前视偏误与幸存者偏差风险。</p>
+    <p><b>用途:</b>教学沙盒 / 方法论演示。本工具<b>不构成任何投资建议</b>,不接受资金,不下单,不向任何用户作出买卖推荐。所有标的代码均为公开样例,仅用于说明价值链结构。</p>
+    <p class="dim">教学构建 · 演示数据 · 非投资建议</p>
   </footer>
 
 </div>

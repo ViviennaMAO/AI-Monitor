@@ -3,7 +3,7 @@
  * outside SuperBox.
  *
  * The three-gate rotation logic mirrors simulate_rotation() in
- * 《数据接口与回测契约》§4 and the client-side runSim() in luffa_superbox_fund.html.
+ * 《数据接口与回测契约》§4 and the client-side runSim() in index.html.
  */
 
 export const LAYER = {

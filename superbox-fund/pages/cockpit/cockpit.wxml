@@ -3,20 +3,20 @@
   <!-- ============ HERO (blue gradient) ============ -->
   <view class="hero">
     <view class="topbar">
-      <text class="brand">LUFFA · BOX</text>
-      <text class="sub">AI 生态基金</text>
+      <text class="brand">AI ECO · SANDBOX</text>
+      <text class="sub">教学沙盒</text>
       <view class="health {{status==='live' ? 'live' : ''}}" bindtap="onTapHealth">
         <view class="dot"></view>
         <text>{{status === 'live' ? 'LIVE' : 'DEMO'}}</text>
       </view>
     </view>
 
-    <view class="sfc">
-      <view class="sfc-h">
-        <text class="badge">SFC</text>
-        <text>Luffa 香港 · 证监会 1/4/9 号牌</text>
+    <view class="edu">
+      <view class="edu-h">
+        <text class="badge">EDU</text>
+        <text>教学沙盒 · 非投资建议</text>
       </view>
-      <text class="sfc-s">LAIF-I · 合格投资者 · 非投资建议</text>
+      <text class="edu-s">演示方法论结构 · 不接受资金 / 不下单 / 不构成推荐</text>
     </view>
 
     <view class="hero-kpi">
@@ -140,28 +140,6 @@
           <text class="a-b">隐藏暴露:</text>10 标的中 {{exposure.capex_beta_high_count}} 个对 Capex 叙事高 β,真实独立判断 ≈ <text class="a-b">{{exposure.independent_bets_est}} 注</text>
         </view>
       </view>
-    </view>
-
-    <!-- PM identity (Luffa SuperBox 自动软登录,无需按钮) -->
-    <view class="card">
-      <view class="card-h">
-        <text class="k">PM · 身份</text>
-        <text class="t">投资经理 Luffa 身份</text>
-      </view>
-      <view class="wallet-on">
-        <view class="wo-dot"></view>
-        <view style="flex:1; min-width:0;">
-          <block wx:if="{{wallet}}">
-            <text class="wo-name">{{wallet.nickname || 'Luffa User'}}</text>
-            <text class="wo-addr">{{wallet.address}}</text>
-          </block>
-          <block wx:else>
-            <text class="wo-name muted">{{walletReady ? '未登录 Luffa' : '载入中…'}}</text>
-            <text class="wo-addr">{{walletReady ? '请在 Luffa 客户端打开本小程序' : ''}}</text>
-          </block>
-        </view>
-      </view>
-      <text class="hint">调仓单将以此身份签署 · signMessageV2 · 不发起链上交易</text>
     </view>
 
     <view class="foot">

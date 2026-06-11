@@ -129,22 +129,9 @@
           <text wx:if="{{!simResult.gates.g3}}" class="neg"> · 闸3 未通过</text>
         </view>
 
-        <view class="sign-row">
-          <button class="btn" bindtap="onSignRotation" disabled="{{signing || !simResult.ok}}">
-            {{signing ? '签署中…' : '由 PM 签署调仓单'}}
-          </button>
-          <text class="hint" wx:if="{{!simResult.ok}}">三闸未全通过 · 仅供模拟</text>
-          <text class="hint" wx:elif="{{!wallet}}">需先在驾驶舱连接 Luffa 钱包</text>
+        <view class="sandbox-note">
+          <text class="hint">教学沙盒 · 仅展示三道闸如何评估调仓 · 不下单 / 不构成推荐</text>
         </view>
-        <view wx:if="{{signedTicket}}" class="ticket">
-          <view class="t-head">
-            <view class="t-dot"></view>
-            <text class="t-h">已签署调仓单 · {{signedTicket.fingerprint}}</text>
-          </view>
-          <text class="mono dim">签名:{{signedTicket.sig}}</text>
-          <text class="hint">人在回路 · 交易由交易台执行</text>
-        </view>
-        <view wx:if="{{signError}}" class="err">{{signError}}</view>
       </view>
     </view>
 

@@ -3,7 +3,7 @@
 	"TCMPPappid": "REPLACE_WITH_YOUR_APPID",
 	"projectname": "AI%20Monitor",
 	"libVersion": "1.5.0",
-	"description": "Luffa AI Ecosystem Fund · Position Cockpit (SFC-licensed, demo build)",
+	"description": "AI Ecosystem Fund · sandbox cockpit (educational demo, not investment advice)",
 	"setting": {
 		"es6": true,
 		"postcss": true,

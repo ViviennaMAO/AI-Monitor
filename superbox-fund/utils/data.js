@@ -11,7 +11,7 @@
  */
 
 const USE_REMOTE = false;
-const BASE = 'https://api.luffa-fund.example.com/pipeline/output';
+const BASE = 'https://api.example.com/pipeline/output';
 
 // ---------------------------------------------------------------- embedded mock
 const MOCK = {

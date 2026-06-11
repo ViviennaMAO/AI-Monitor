@@ -33,34 +33,14 @@ Page({
     exposure: null,
     segPct: { compute:0, cloud:0, app:0, power:0, cash:0 },
     top1Pct: 0,
-    top3Pct: 0,
-
-    // wallet — driven by globalData (silent soft-login in app.js onLaunch)
-    wallet: null,
-    walletReady: false
+    top3Pct: 0
   },
 
   onLoad() {
     this._render();
-    this._awaitWallet();
   },
   onShow() {
-    // refresh KPI + wallet on tab switch — globalData may have changed
     if (this.data.ready) this._render();
-    this.setData({
-      wallet:      getApp().globalData.wallet,
-      walletReady: getApp().globalData.walletReady
-    });
-  },
-
-  /** If soft-login is still in flight at onLoad time, wait for it to settle and refresh the card. */
-  _awaitWallet() {
-    const p = getApp().globalData.walletPromise;
-    if (!p) return;
-    p.then(() => this.setData({
-      wallet:      getApp().globalData.wallet,
-      walletReady: getApp().globalData.walletReady
-    }));
   },
   onPullDownRefresh() {
     loadAll().then(c => {
@@ -119,10 +99,7 @@ Page({
       exposure: ex,
       segPct,
       top1Pct: Math.round(ex.concentration.top1 * 100),
-      top3Pct: Math.round(ex.concentration.top3 * 100),
-
-      wallet:      getApp().globalData.wallet,
-      walletReady: getApp().globalData.walletReady
+      top3Pct: Math.round(ex.concentration.top3 * 100)
     });
   },
 

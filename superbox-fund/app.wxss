@@ -94,8 +94,8 @@ page {
 .card-h .t { font-size: 30rpx; font-weight: 700; color: #1B1F3B; }
 .card-h .n { margin-left: auto; font-size: 20rpx; color: #9CA3AF; }
 
-/* ---------- SFC compliance pill ---------- */
-.sfc {
+/* ---------- educational sandbox notice ---------- */
+.edu {
   display: flex; flex-direction: column; gap: 6rpx;
   background: rgba(255,255,255,0.14);
   border: 1rpx solid rgba(255,255,255,0.25);
@@ -103,13 +103,13 @@ page {
   padding: 16rpx 20rpx;
   margin-bottom: 8rpx;
 }
-.sfc .sfc-h { display: flex; align-items: center; gap: 12rpx; font-size: 22rpx; color: #FFFFFF; }
-.sfc .sfc-h .badge {
+.edu .edu-h { display: flex; align-items: center; gap: 12rpx; font-size: 22rpx; color: #FFFFFF; }
+.edu .edu-h .badge {
   background: #FFFFFF; color: #5468FF;
   font-weight: 700; font-size: 18rpx; padding: 6rpx 12rpx; border-radius: 7rpx;
   font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.06em;
 }
-.sfc .sfc-s { font-size: 20rpx; color: rgba(255,255,255,0.7);
+.edu .edu-s { font-size: 20rpx; color: rgba(255,255,255,0.7);
               font-family: ui-monospace, Menlo, monospace; }
 
 /* ---------- buttons ---------- */

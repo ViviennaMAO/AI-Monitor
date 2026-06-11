@@ -1,4 +1,3 @@
-import { luffa, rotationFingerprint } from '../../utils/luffa';
 import { loadAll } from '../../utils/data';
 import { LAYER, SEG_NAME, capexTag, healthColor,
          evaluateRotation, autoSuggest } from '../../utils/portfolio';
@@ -13,12 +12,7 @@ Page({
     outIndex: 0, inIndex: 0,
 
     suggestions: [],
-    simResult: null,
-
-    wallet: null,
-    signing: false,
-    signedTicket: null,
-    signError: null
+    simResult: null
   },
 
   onLoad() { this._render(); },
@@ -29,12 +23,6 @@ Page({
     if (intent && Date.now() - intent.ts < 5000) {
       delete getApp().globalData.rotationIntent;
       this._applyIntent(intent.out, intent.in);
-    }
-    // pull wallet status from app globalData; if soft-login still in flight, wait for it
-    this.setData({ wallet: getApp().globalData.wallet || null });
-    const p = getApp().globalData.walletPromise;
-    if (p && !getApp().globalData.walletReady) {
-      p.then(() => this.setData({ wallet: getApp().globalData.wallet || null }));
     }
   },
   onPullDownRefresh() {
@@ -112,8 +100,7 @@ Page({
     const inIdx  = this.data.inOptions.findIndex(o  => o.ticker === inTk);
     if (outIdx < 0 || inIdx < 0) return;
     this._lastOut = outTk; this._lastIn = inTk;
-    this.setData({ outIndex: outIdx, inIndex: inIdx,
-                   signedTicket: null, signError: null }, () => this._runSim());
+    this.setData({ outIndex: outIdx, inIndex: inIdx }, () => this._runSim());
   },
 
   _runSim() {
@@ -156,9 +143,7 @@ Page({
         },
         verdict: result.verdict,
         ok: result.ok
-      },
-      signedTicket: null,
-      signError: null
+      }
     });
   },
 
@@ -170,52 +155,13 @@ Page({
   },
 
   onSelOut(e) {
-    this.setData({ outIndex: +e.detail.value, signedTicket: null }, () => this._runSim());
+    this.setData({ outIndex: +e.detail.value }, () => this._runSim());
   },
   onSelIn(e) {
-    this.setData({ inIndex: +e.detail.value, signedTicket: null }, () => this._runSim());
+    this.setData({ inIndex: +e.detail.value }, () => this._runSim());
   },
   onLoadSuggestion(e) {
     this._applyIntent(e.currentTarget.dataset.out, e.currentTarget.dataset.in);
   },
-  onRunSim() { this._runSim(); },
-
-  async onSignRotation() {
-    if (!this.data.wallet) {
-      this.setData({ signError: '请先在驾驶舱连接 Luffa 钱包' });
-      return;
-    }
-    if (!this.data.simResult || !this.data.simResult.ok) return;
-
-    this.setData({ signing: true, signError: null });
-
-    const out  = this.data.outOptions[this.data.outIndex].ticker;
-    const into = this.data.inOptions [this.data.inIndex ].ticker;
-    const fp = rotationFingerprint(
-      out, into,
-      this.data.simResult.cells.map(c => c.before),
-      this.data.simResult.cells.map(c => c.after)
-    );
-    const msg = `[LAIF-I rotation] ${out} → ${into} · as_of ${this.data.asOf} · ${fp}`;
-
-    try {
-      const res = await luffa('signMessageV2', {
-        message: msg,
-        nonce:   String(Date.now()),
-        address: true, application: true, chainId: true
-      });
-      this.setData({
-        signing: false,
-        signedTicket: {
-          fingerprint: fp,
-          sig: (res && res.signature) ? String(res.signature).slice(0, 32) + '…' : '(simulator)'
-        }
-      });
-    } catch (err) {
-      this.setData({
-        signing: false,
-        signError: (err && err.errMsg) || String(err)
-      });
-    }
-  }
+  onRunSim() { this._runSim(); }
 });
