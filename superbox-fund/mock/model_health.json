@@ -1,0 +1,12 @@
+{
+  "oos_ic": null,
+  "factor_ic": {
+    "capex_revision":   null,
+    "earnings_revision": null,
+    "momentum":         null,
+    "valuation":        null
+  },
+  "collinearity_warnings": [],
+  "alpha_confirmed": false,
+  "status": "demo"
+}

@@ -1,0 +1,26 @@
+{
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "TCMPPappid": "REPLACE_WITH_YOUR_APPID",
+  "projectname": "luffa-ai-fund-cockpit",
+  "libVersion": "1.5.0",
+  "description": "Luffa AI Ecosystem Fund · Position Cockpit (SFC-licensed, demo build)",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "uglifyFileName": true,
+    "urlCheck": true
+  },
+  "condition": {
+    "miniprogram": {
+      "current": 0,
+      "list": [
+        { "id": 0, "name": "驾驶舱", "pathName": "pages/cockpit/cockpit", "query": "", "scene": null },
+        { "id": 1, "name": "持仓",   "pathName": "pages/positions/positions", "query": "", "scene": null },
+        { "id": 2, "name": "调仓",   "pathName": "pages/rotation/rotation",   "query": "", "scene": null }
+      ]
+    }
+  },
+  "mockConfig": { "globalOpen": false, "rules": [] }
+}

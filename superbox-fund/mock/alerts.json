@@ -1,0 +1,27 @@
+{
+  "as_of": "2026-06-11",
+  "circuit_breakers": [
+    {
+      "key": "drawdown", "name": "回撤熔断", "state": "normal",
+      "value": -0.042,
+      "ladder": { "reduce": -0.05, "pause": -0.08, "liquidate": -0.15 },
+      "mult": 1.0
+    },
+    {
+      "key": "correlation", "name": "相关性熔断", "state": "watch",
+      "value": 0.81, "threshold": 0.85, "mult": 1.0
+    },
+    {
+      "key": "ic_monitor", "name": "信号有效性", "state": "pending",
+      "rolling_ic": null, "note": "接入真实数据后启用"
+    }
+  ],
+  "stock_alerts": [
+    {
+      "ticker": "AMD", "state": "fire",
+      "metric": "MI 数据中心 YoY", "current": 38, "threshold": 40,
+      "direction": "below", "push_target": "MU"
+    }
+  ],
+  "portfolio_mult": 1.0
+}

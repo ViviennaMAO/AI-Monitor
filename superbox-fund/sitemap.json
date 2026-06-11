@@ -1,0 +1,4 @@
+{
+  "desc": "Luffa AI Fund cockpit — internal PI tool; allow indexing of all pages.",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

@@ -1,0 +1,8 @@
+{
+  "segments":             { "compute": 0.39, "cloud": 0.25, "app": 0.14, "power": 0.10, "cash": 0.12 },
+  "segment_counts":       { "compute": 4,    "cloud": 3,    "app": 2,    "power": 1 },
+  "concentration":        { "top1": 0.15, "top3": 0.35, "top5": 0.52 },
+  "avg_correlation":      0.81,
+  "capex_beta_high_count": 8,
+  "independent_bets_est":  3
+}

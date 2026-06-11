@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/cockpit/cockpit",
+    "pages/positions/positions",
+    "pages/rotation/rotation"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#0E1116",
+    "navigationBarBackgroundColor": "#0E1116",
+    "navigationBarTitleText": "AI 生态基金",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#6B7480",
+    "selectedColor": "#2DD4BF",
+    "backgroundColor": "#161B22",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/cockpit/cockpit",     "text": "驾驶舱" },
+      { "pagePath": "pages/positions/positions", "text": "持仓" },
+      { "pagePath": "pages/rotation/rotation",   "text": "调仓" }
+    ]
+  },
+  "networkTimeout": { "request": 10000 },
+  "permission": {}
+}

@@ -1,0 +1,123 @@
+{
+  "as_of": "2026-06-11",
+  "fund": {
+    "nav": 1.184,
+    "excess_vs_bench": 0.061,
+    "drawdown": -0.042,
+    "max_drawdown": -0.197,
+    "beta": 1.32,
+    "cash": 0.12
+  },
+  "holdings": [
+    {
+      "ticker": "NVDA", "name": "英伟达", "layer": "compute",
+      "weight": 0.15, "day_change": 0.018, "health": 82, "capex_beta": "high",
+      "pillars": ["CUDA 护城河", "数据中心加速期", "定价权强"],
+      "kpis": [
+        { "label": "数据中心营收 YoY", "value": "+94%" },
+        { "label": "毛利率", "value": "75%" }
+      ],
+      "tripwire": "数据中心营收增速连续两季放缓 / 大客户ASIC替代加速",
+      "monitor": { "metric": "数据中心营收 YoY", "current": 94, "threshold": 60, "direction": "below", "unit": "%" }
+    },
+    {
+      "ticker": "AVGO", "name": "博通", "layer": "compute",
+      "weight": 0.09, "day_change": 0.009, "health": 76, "capex_beta": "high",
+      "pillars": ["定制 AI ASIC + 高速网络", "VMware 现金流对冲", "AI 收入占比抬升"],
+      "kpis": [
+        { "label": "AI 收入 YoY", "value": "+63%" },
+        { "label": "毛利率", "value": "77%" }
+      ],
+      "tripwire": "超大厂定制 ASIC 订单指引下修",
+      "monitor": { "metric": "AI 收入 YoY", "current": 63, "threshold": 35, "direction": "below", "unit": "%" }
+    },
+    {
+      "ticker": "TSM", "name": "台积电", "layer": "compute",
+      "weight": 0.08, "day_change": 0.006, "health": 80, "capex_beta": "high",
+      "pillars": ["先进制程与 CoWoS 唯一可靠产能", "全 AI 链上游卡位", "产能与定价同步抬升"],
+      "kpis": [
+        { "label": "先进制程占比", "value": ">60%" },
+        { "label": "CoWoS 稼动", "value": "满载" }
+      ],
+      "tripwire": "先进制程稼动率下行或地缘风险升级",
+      "monitor": { "metric": "先进制程稼动率", "current": 96, "threshold": 80, "direction": "below", "unit": "%" }
+    },
+    {
+      "ticker": "AMD", "name": "超威", "layer": "compute",
+      "weight": 0.07, "day_change": -0.007, "health": 64, "capex_beta": "high",
+      "pillars": ["GPU 第二供应商红利", "客户多元化", "份额上升空间"],
+      "kpis": [
+        { "label": "数据中心 YoY", "value": "+38%" },
+        { "label": "毛利率", "value": "53%" }
+      ],
+      "tripwire": "MI 系列放量不及指引",
+      "monitor": { "metric": "MI 数据中心 YoY", "current": 38, "threshold": 40, "direction": "below", "unit": "%" }
+    },
+    {
+      "ticker": "MSFT", "name": "微软", "layer": "cloud",
+      "weight": 0.10, "day_change": 0.005, "health": 78, "capex_beta": "high",
+      "pillars": ["Azure + OpenAI + Copilot 全链路", "企业级分发最强", "现金流厚"],
+      "kpis": [
+        { "label": "Azure YoY", "value": "+31%" },
+        { "label": "AI 贡献 Azure", "value": "+12pp" }
+      ],
+      "tripwire": "Azure 增速放缓且 Capex 回报存疑",
+      "monitor": { "metric": "Azure YoY", "current": 31, "threshold": 25, "direction": "below", "unit": "%" }
+    },
+    {
+      "ticker": "GOOGL", "name": "谷歌", "layer": "cloud",
+      "weight": 0.08, "day_change": 0.003, "health": 72, "capex_beta": "high",
+      "pillars": ["Gemini + 自有 TPU", "云利润率改善", "搜索现金牛"],
+      "kpis": [
+        { "label": "Cloud YoY", "value": "+28%" },
+        { "label": "Cloud 利润率", "value": "抬升" }
+      ],
+      "tripwire": "搜索货币化被 AI 答案侵蚀",
+      "monitor": { "metric": "搜索货币化稳健度", "current": 80, "threshold": 70, "direction": "below", "unit": "" }
+    },
+    {
+      "ticker": "META", "name": "Meta", "layer": "cloud",
+      "weight": 0.07, "day_change": -0.004, "health": 70, "capex_beta": "high",
+      "pillars": ["Llama 开源生态绑定开发者", "广告 AI 提 ROI", "现金流支撑 Capex"],
+      "kpis": [
+        { "label": "广告收入 YoY", "value": "+22%" },
+        { "label": "Capex 同比", "value": "+大幅" }
+      ],
+      "tripwire": "Capex 失控而 AI 变现滞后",
+      "monitor": { "metric": "Capex / 经营现金流", "current": 62, "threshold": 65, "direction": "above", "unit": "%" }
+    },
+    {
+      "ticker": "PLTR", "name": "Palantir", "layer": "app",
+      "weight": 0.08, "day_change": 0.024, "health": 68, "capex_beta": "low",
+      "pillars": ["AIP 把 AI 落地为生产力", "美商业增速强", "稀缺的应用层兑现"],
+      "kpis": [
+        { "label": "美商业 YoY", "value": "+大幅" },
+        { "label": "净留存", "value": ">120%" }
+      ],
+      "tripwire": "估值消化叠加净新增放缓",
+      "monitor": { "metric": "远期 PE 历史分位", "current": 88, "threshold": 90, "direction": "above", "unit": "" }
+    },
+    {
+      "ticker": "NOW", "name": "ServiceNow", "layer": "app",
+      "weight": 0.06, "day_change": 0.004, "health": 74, "capex_beta": "low",
+      "pillars": ["工作流 Agent 嵌入企业核心", "cRPO 稳健", "平台横向扩展"],
+      "kpis": [
+        { "label": "cRPO YoY", "value": "+24%" },
+        { "label": "NRR", "value": "98%" }
+      ],
+      "tripwire": "NRR 持续下行",
+      "monitor": { "metric": "净留存 NRR", "current": 98, "threshold": 92, "direction": "below", "unit": "%" }
+    },
+    {
+      "ticker": "VRT", "name": "Vertiv", "layer": "power",
+      "weight": 0.10, "day_change": 0.011, "health": 77, "capex_beta": "high",
+      "pillars": ["数据中心电力散热刚需", "订单 backlog 创新高", "卡位关键瓶颈"],
+      "kpis": [
+        { "label": "backlog", "value": "创新高" },
+        { "label": "营收 YoY", "value": "+20%" }
+      ],
+      "tripwire": "数据中心建设节奏放缓",
+      "monitor": { "metric": "订单 backlog YoY", "current": 28, "threshold": 15, "direction": "below", "unit": "%" }
+    }
+  ]
+}

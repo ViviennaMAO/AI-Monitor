@@ -1,0 +1,23 @@
+{
+  "as_of": "2026-06-11", "frequency": "weekly",
+  "account": {
+    "annualized": 0.171,
+    "max_drawdown": -0.143,
+    "sharpe": 1.42,
+    "win_rate": 0.58,
+    "excess_vs_bench": 0.061,
+    "n_rebalances": 36
+  },
+  "contribution_bps": {
+    "NVDA": 142, "AVGO": 71, "TSM": 48, "AMD": -22,
+    "MSFT": 63, "GOOGL": 39, "META": -18,
+    "PLTR": 96, "NOW":  31, "VRT":  74
+  },
+  "validation": {
+    "method": "CPCV", "n_paths": 15,
+    "median_sharpe": 0.9, "p_value": 0.21,
+    "alpha_confirmed": false,
+    "oos_start": "2025-10-01",
+    "note": "AI Capex 周期样本不足,CPCV 统计力弱,alpha 多数情形不可确认"
+  }
+}

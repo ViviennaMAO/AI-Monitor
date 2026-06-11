@@ -1,0 +1,17 @@
+{
+  "as_of": "2026-06-11",
+  "verdict": { "season": "summer", "label": "盛夏 · 进攻为主", "gauge": 0.78, "stance": "offense" },
+  "final_mult": 1.18,
+  "signals": [
+    { "key": "capex_guidance",   "name": "超大厂 Capex 指引", "state": "up",            "is_master": true, "z":  1.2 },
+    { "key": "liquidity",        "name": "流动性 / 利率",     "state": "neutral_loose",                    "z":  0.3 },
+    { "key": "inference_demand", "name": "推理 / Token 需求", "state": "accelerating",                     "z":  1.5 },
+    { "key": "supply_power",     "name": "电力 / 供应链约束", "state": "tightening",                       "z": -0.8 }
+  ],
+  "layers": {
+    "L1_macro_quadrant":   { "quadrant": "overheating", "mult": 1.00 },
+    "L2_market_structure": { "state": "trending",       "adj":  1.05 },
+    "L3_event_overlay":    { "delta": -0.05,            "events": ["supply_constraint"] },
+    "L4_capex_cycle":      { "state": "capex_expansion", "mult": 1.10 }
+  }
+}

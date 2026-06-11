@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# node (if Taro/build added later)
+node_modules/
+dist/
+npm-debug.log*
+
+# luffa cloud-devtools local cache
+.tcmp/
+
+# scratch
+*.local

@@ -1,0 +1,46 @@
+{
+  "candidates": [
+    {
+      "ticker": "MU", "name": "美光", "layer": "compute",
+      "capex_beta": "mid", "readiness": 78,
+      "thesis": "HBM 内存周期向上,与逻辑芯片不同节奏",
+      "catalyst": "HBM3E 放量 / 下季产能指引",
+      "promotion_trigger": "AMD MI 放量不及 → 同段以内存周期上行替代"
+    },
+    {
+      "ticker": "ARM", "name": "Arm", "layer": "compute",
+      "capex_beta": "low", "readiness": 72,
+      "thesis": "IP 授权轻资产,版税随出货累积",
+      "catalyst": "AI 端侧授权 / 版税率提升",
+      "promotion_trigger": "降低算力段重资产暴露"
+    },
+    {
+      "ticker": "ORCL", "name": "甲骨文", "layer": "cloud",
+      "capex_beta": "high", "readiness": 74,
+      "thesis": "OCI AI 基建追赶,RPO 高增长",
+      "catalyst": "OCI RPO 增速",
+      "promotion_trigger": "云段出现弱者(如 META Capex 失控)替换"
+    },
+    {
+      "ticker": "CRM", "name": "Salesforce", "layer": "app",
+      "capex_beta": "low", "readiness": 70,
+      "thesis": "Agentforce 把 Agent 直接变现",
+      "catalyst": "Agentforce 付费渗透",
+      "promotion_trigger": "扩大应用段或改善分散"
+    },
+    {
+      "ticker": "CEG", "name": "Constellation", "layer": "power",
+      "capex_beta": "low", "readiness": 80,
+      "thesis": "核电直供数据中心,与算力叙事低相关",
+      "catalyst": "数据中心供电协议 / 核电产能",
+      "promotion_trigger": "组合 Capex-β 过高 → 用电力侧降系统性相关"
+    },
+    {
+      "ticker": "ETN", "name": "伊顿", "layer": "power",
+      "capex_beta": "mid", "readiness": 75,
+      "thesis": "电气设备受益电力瓶颈",
+      "catalyst": "数据中心 / 电网订单",
+      "promotion_trigger": "增配供应链段、对冲电力瓶颈"
+    }
+  ]
+}

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luffa SuperBox · AI 生态基金驾驶舱</title>
+<style>
+  :root{
+    --ink:#0E1116; --panel:#161B22; --panel2:#1C232D;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+    --t1:#E8ECF2; --t2:#9AA4B2; --t3:#6B7480;
+    --teal:#2DD4BF; --green:#4ADE80; --red:#F26D6D; --amber:#E5A84B;
+    --compute:#8B7FE8; --cloud:#2DD4BF; --app:#F08A6B; --power:#E5A84B;
+    --cash:#566072;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ink);color:var(--t1);font-family:var(--sans);
+    font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;padding:0 0 48px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .pos{color:var(--green)} .neg{color:var(--red)} .warn{color:var(--amber)}
+  .muted{color:var(--t2)} .dim{color:var(--t3)}
+
+  /* top bar */
+  .topbar{border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;
+    background:rgba(14,17,22,.86);backdrop-filter:blur(10px)}
+  .topbar .wrap{display:flex;align-items:center;gap:16px;height:62px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#2DD4BF,#8B7FE8);
+    display:flex;align-items:center;justify-content:center;font-weight:700;color:#0E1116;font-size:14px}
+  .brand b{font-weight:600;letter-spacing:.02em}
+  .brand .sub{color:var(--t2);font-size:12.5px;border-left:1px solid var(--line2);padding-left:14px;margin-left:4px}
+  .demo-tag{font-family:var(--mono);font-size:11px;color:var(--amber);
+    border:1px solid rgba(229,168,75,.4);padding:3px 9px;border-radius:5px;background:rgba(229,168,75,.07)}
+  .health-pill{margin-left:auto;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;
+    color:var(--t2);border:1px solid var(--line2);padding:3px 10px;border-radius:5px;background:var(--panel2)}
+  .health-pill .hpdot{width:7px;height:7px;border-radius:50%;background:var(--amber);
+    box-shadow:0 0 0 3px rgba(229,168,75,.15)}
+  .health-pill.live{color:var(--green)} .health-pill.live .hpdot{background:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.15)}
+
+  /* SFC compliance ribbon */
+  .sfc{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:18px 0 0;
+    background:linear-gradient(180deg,rgba(45,212,191,.05),rgba(45,212,191,.02));
+    border:1px solid rgba(45,212,191,.18);border-radius:12px;padding:13px 16px}
+  .sfc-l{display:flex;align-items:center;gap:13px;flex:1;min-width:280px}
+  .sfc-badge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;
+    color:#0E1116;background:linear-gradient(135deg,#2DD4BF,#4ADE80);padding:5px 10px;border-radius:6px}
+  .sfc-h{font-size:13px;line-height:1.45;color:var(--t1)}
+  .sfc-h b{font-weight:600;color:var(--teal)}
+  .sfc-s{font-size:11.5px;color:var(--t2);margin-top:3px;font-family:var(--mono)}
+  .sfc-s b{color:var(--t1);font-weight:600}
+  .sfc-r{display:flex;gap:8px;flex-wrap:wrap}
+  .sfc-tag{font-family:var(--mono);font-size:11px;color:var(--t2);background:var(--panel2);
+    border:1px solid var(--line);padding:4px 10px;border-radius:5px}
+
+  /* kpi row */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0}
+  .kpi{background:var(--panel);padding:14px 16px}
+  .kpi .lab{font-size:11.5px;color:var(--t2);margin-bottom:6px;letter-spacing:.01em}
+  .kpi .val{font-family:var(--mono);font-size:21px;font-weight:600}
+  .kpi .sub{font-family:var(--mono);font-size:12px;margin-top:2px}
+
+  /* section */
+  .sec-h{display:flex;align-items:baseline;gap:12px;margin:30px 0 14px}
+  .sec-h .k{font-family:var(--mono);font-size:12px;color:var(--teal);letter-spacing:.08em}
+  .sec-h h2{font-size:16px;font-weight:600;margin:0}
+  .sec-h .note{margin-left:auto;font-size:12px;color:var(--t3)}
+
+  .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+
+  /* climate / regime */
+  .regime-top{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .season{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-size:24px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3)}
+  .regime-top .verdict{font-size:18px;font-weight:600}
+  .regime-top .verdict span{color:var(--green)}
+  .regime-top .why{font-size:12px;color:var(--t2);margin-top:2px}
+  .gauge{height:8px;border-radius:5px;margin:6px 0 4px;
+    background:linear-gradient(90deg,#3a4a6b 0%,#566072 32%,#9AA4B2 50%,#3fae8e 70%,#4ADE80 100%)}
+  .gauge-wrap{position:relative;margin:18px 2px 6px}
+  .ptr{position:absolute;top:-5px;width:2px;height:18px;background:var(--t1);border-radius:2px;
+    box-shadow:0 0 0 3px rgba(232,236,242,.15)}
+  .gauge-labs{display:flex;justify-content:space-between;font-size:10.5px;color:var(--t3);
+    font-family:var(--mono);margin-top:7px}
+  .signals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+  .sig{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+  .sig .n{font-size:11.5px;color:var(--t2)}
+  .sig .v{font-family:var(--mono);font-size:13px;font-weight:600;margin-top:3px;display:flex;
+    align-items:center;gap:6px}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+  /* exposure */
+  .expo-bar{display:flex;height:34px;border-radius:8px;overflow:hidden;margin:4px 0 14px}
+  .expo-bar > div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+    font-size:11px;font-weight:600;color:#0E1116}
+  .legend{display:flex;flex-wrap:wrap;gap:12px 18px;font-size:12px}
+  .legend .it{display:flex;align-items:center;gap:7px;color:var(--t2)}
+  .legend .sw{width:10px;height:10px;border-radius:3px}
+  .conc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0 0;
+    border-top:1px solid var(--line);padding-top:14px}
+  .conc .b{text-align:center}
+  .conc .b .v{font-family:var(--mono);font-size:18px;font-weight:600}
+  .conc .b .l{font-size:11px;color:var(--t2);margin-top:2px}
+  .alert{margin-top:14px;background:rgba(242,109,109,.08);border:1px solid rgba(242,109,109,.28);
+    border-radius:8px;padding:11px 13px;font-size:12.5px;color:#f3a3a3;display:flex;gap:9px}
+  .alert b{color:#ffc0c0;font-weight:600}
+
+  /* filter chips */
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--t2);background:var(--panel);
+    border:1px solid var(--line);padding:6px 13px;border-radius:20px;cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--line2);color:var(--t1)}
+  .chip.on{background:var(--t1);color:var(--ink);border-color:var(--t1);font-weight:600}
+
+  /* stock grid */
+  .stocks{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .stk{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;
+    cursor:pointer;transition:.15s;position:relative;overflow:hidden}
+  .stk:hover{border-color:var(--line2);transform:translateY(-1px)}
+  .stk.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+  .stk .lcolor{position:absolute;left:0;top:0;bottom:0;width:3px}
+  .stk .tk{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.02em}
+  .stk .wt{font-family:var(--mono);font-size:11px;color:var(--t2);float:right;margin-top:2px}
+  .stk .chg{font-family:var(--mono);font-size:12px;margin-top:6px}
+  .stk .hbar{height:4px;border-radius:3px;background:var(--panel2);margin-top:10px;overflow:hidden}
+  .stk .hbar > i{display:block;height:100%;border-radius:3px}
+
+  /* detail panel */
+  .detail{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:22px 28px}
+  .detail .hd{grid-column:1/-1;display:flex;align-items:center;gap:12px;
+    border-bottom:1px solid var(--line);padding-bottom:14px}
+  .detail .hd .tk{font-family:var(--mono);font-size:22px;font-weight:700}
+  .detail .hd .name{color:var(--t2);font-size:13px}
+  .detail .hd .pill{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+  .detail .hd .wt{margin-left:auto;font-family:var(--mono);text-align:right}
+  .detail .hd .wt b{font-size:18px} .detail .hd .wt span{font-size:11px;color:var(--t2);display:block}
+  .blk .bh{font-size:11.5px;color:var(--teal);font-family:var(--mono);letter-spacing:.06em;margin-bottom:8px}
+  .pillars{list-style:none;margin:0;padding:0}
+  .pillars li{padding:5px 0 5px 20px;position:relative;font-size:13px;color:var(--t1)}
+  .pillars li:before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;
+    border-radius:2px;background:var(--teal)}
+  .kpiline{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .kpiline:last-child{border:0} .kpiline .v{font-family:var(--mono);font-weight:600}
+  .healthrow{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .healthrow .track{flex:1;height:7px;background:var(--panel2);border-radius:4px;overflow:hidden}
+  .healthrow .track > i{display:block;height:100%;border-radius:4px}
+  .trip{background:rgba(242,109,109,.07);border:1px solid rgba(242,109,109,.25);border-radius:8px;
+    padding:11px 13px;font-size:12.5px;color:#f0a8a8}
+  .trip b{color:#ffc0c0}
+
+  /* backtest */
+  .bt-banner{background:rgba(229,168,75,.08);border:1px solid rgba(229,168,75,.3);border-radius:10px;
+    padding:12px 15px;font-size:12.5px;color:#f0cf9a;display:flex;gap:10px;margin-bottom:16px}
+  .bt-banner b{color:#ffe1b0;font-weight:600}
+  .bt-controls{display:flex;gap:8px;margin-bottom:14px}
+  .seg{font-family:var(--mono);font-size:12px;color:var(--t2);background:var(--panel2);
+    border:1px solid var(--line);padding:5px 14px;border-radius:7px;cursor:pointer}
+  .seg.on{background:var(--teal);color:#06302a;border-color:var(--teal);font-weight:700}
+  .chart-leg{display:flex;gap:18px;font-size:12px;margin:0 0 8px;font-family:var(--mono)}
+  .chart-leg .it{display:flex;align-items:center;gap:6px;color:var(--t2)}
+  .chart-leg .ln{width:16px;height:2px;border-radius:2px}
+  #chart{width:100%;height:260px;display:block}
+  .bt-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:16px}
+  .bt-metrics .m{background:var(--panel2);padding:12px 14px;text-align:center}
+  .bt-metrics .m .v{font-family:var(--mono);font-size:18px;font-weight:600}
+  .bt-metrics .m .l{font-size:11px;color:var(--t2);margin-top:3px}
+  .contrib{margin-top:18px}
+  .contrib .row{display:grid;grid-template-columns:54px 1fr 70px;align-items:center;gap:12px;
+    padding:6px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+  .contrib .row:last-child{border:0}
+  .contrib .tk{font-family:var(--mono);font-weight:600}
+  .contrib .barwrap{height:7px;background:var(--panel2);border-radius:4px;position:relative;overflow:hidden}
+  .contrib .barwrap > i{position:absolute;top:0;bottom:0;border-radius:4px}
+  .contrib .bp{font-family:var(--mono);text-align:right}
+
+  footer{margin-top:34px;border-top:1px solid var(--line);padding-top:18px;font-size:12px;color:var(--t3)}
+  footer b{color:var(--t2);font-weight:600}
+  footer p{margin:6px 0}
+
+  /* bench + rotation */
+  .rules{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .rule{flex:1;min-width:160px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:11px 13px}
+  .rule .g{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.04em}
+  .rule .d{font-size:12px;color:var(--t2);margin-top:5px;line-height:1.45}
+  .sug{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:9px;
+    display:flex;align-items:center;gap:13px}
+  .sug .ic{font-size:15px}
+  .sug .tx{font-size:12.5px;color:var(--t1);flex:1;line-height:1.5}
+  .sug .tx b{font-family:var(--mono)}
+  .sug .tx .why{color:var(--t3);font-size:11.5px;margin-top:2px;font-family:var(--mono)}
+  .sug button{font-family:var(--mono);font-size:11.5px;color:var(--teal);background:transparent;
+    border:1px solid var(--teal);padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+  .sug button:hover{background:rgba(45,212,191,.1)}
+  .bench{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .bc{background:var(--panel);border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;position:relative}
+  .bc .lc{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+  .bc .top{display:flex;align-items:center;gap:8px}
+  .bc .tk{font-family:var(--mono);font-weight:700;font-size:15px}
+  .bc .nm{font-size:12px;color:var(--t2)}
+  .bc .cb{margin-left:auto;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600}
+  .bc .ready{display:flex;align-items:center;gap:8px;margin:10px 0}
+  .bc .ready .tr{flex:1;height:5px;background:var(--panel2);border-radius:3px;overflow:hidden}
+  .bc .ready .tr>i{display:block;height:100%}
+  .bc .th{font-size:12px;color:var(--t1);line-height:1.5;margin-bottom:9px}
+  .bc .meta{font-size:11.5px;color:var(--t2)}
+  .bc .meta b{color:var(--teal);font-weight:600}
+  .bc .trig{font-size:11.5px;color:#eab58e;margin-top:6px;line-height:1.45}
+  .simctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 4px}
+  .simctl select{font-family:var(--mono);font-size:13px;color:var(--t1);background:var(--panel2);
+    border:1px solid var(--line2);border-radius:8px;padding:8px 11px;min-width:170px}
+  .simctl .arrow{color:var(--t2);font-size:18px}
+  .simctl .go{font-family:var(--sans);font-size:13px;font-weight:600;color:#06302a;background:var(--teal);
+    border:none;padding:9px 18px;border-radius:8px;cursor:pointer}
+  .simctl .lab{font-size:11.5px;color:var(--t2)}
+  .simres{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+  .ba{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:9px;overflow:hidden;margin-bottom:14px}
+  .ba .c{background:var(--panel2);padding:11px 6px;text-align:center}
+  .ba .c .l{font-size:10.5px;color:var(--t2)}
+  .ba .c .v{font-family:var(--mono);font-size:12.5px;margin-top:5px}
+  .ba .c .v .a{color:var(--t3)}
+  .gates{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .gate{flex:1;min-width:170px;border-radius:8px;padding:9px 12px;font-size:12px;border:1px solid var(--line);line-height:1.4}
+  .gate.ok{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3);color:#9fe7b6}
+  .gate.no{background:rgba(242,109,109,.08);border-color:rgba(242,109,109,.3);color:#f3a3a3}
+  .gate.na{background:var(--panel2);color:var(--t2)}
+  .gate .gh{font-family:var(--mono);font-size:10.5px;opacity:.85;margin-bottom:2px}
+  .verdict-line{font-size:13px;padding:12px 14px;border-radius:8px;background:var(--panel2);border:1px solid var(--line)}
+
+  /* alert center */
+  .cb-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .cbx{border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:var(--panel2)}
+  .cbx .h{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t2)}
+  .cbx .st{font-family:var(--mono);font-size:13px;font-weight:600;margin-top:5px;display:flex;align-items:center;gap:7px}
+  .cbx .lad{font-size:11px;color:var(--t3);margin-top:6px;font-family:var(--mono)}
+  .stat-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+  .alist .ai{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:12px;
+    padding:11px 13px;border:1px solid var(--line);border-radius:9px;margin-bottom:8px;background:var(--panel)}
+  .alist .ai.fire{border-color:rgba(242,109,109,.4);background:rgba(242,109,109,.06)}
+  .alist .ai.watch{border-color:rgba(229,168,75,.35);background:rgba(229,168,75,.05)}
+  .alist .sev{font-family:var(--mono);font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:5px;white-space:nowrap}
+  .alist .sev.fire{background:rgba(242,109,109,.18);color:#f3a3a3}
+  .alist .sev.watch{background:rgba(229,168,75,.16);color:#e9c07a}
+  .alist .tk{font-family:var(--mono);font-weight:700;font-size:14px}
+  .alist .cond{font-size:12px;color:var(--t1)}
+  .alist .cond .sub{font-size:11px;color:var(--t2);font-family:var(--mono);margin-top:2px}
+  .alist .val{font-family:var(--mono);font-size:12.5px;text-align:right}
+  .alist .push{font-family:var(--mono);font-size:11px;color:var(--teal);background:transparent;
+    border:1px solid var(--teal);padding:6px 10px;border-radius:6px;cursor:pointer;white-space:nowrap}
+  .alist .push:hover{background:rgba(45,212,191,.1)}
+  .scenarios{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;
+    border-top:1px solid var(--line);padding-top:14px}
+  .scenarios .lab{font-size:11.5px;color:var(--t3)}
+  .scn{font-family:var(--mono);font-size:11.5px;color:var(--t2);background:var(--panel2);
+    border:1px solid var(--line);padding:6px 12px;border-radius:18px;cursor:pointer}
+  .scn:hover{border-color:var(--line2);color:var(--t1)}
+  .scn.on{background:rgba(242,109,109,.14);border-color:rgba(242,109,109,.4);color:#f3a3a3}
+  .scn.reset{color:var(--t3)}
+  .stk.fire{border-color:rgba(242,109,109,.55);box-shadow:0 0 0 1px rgba(242,109,109,.45)}
+  .stk.watch{border-color:rgba(229,168,75,.45)}
+  .stk .abadge{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%}
+
+  @media(max-width:880px){
+    .cb-row{grid-template-columns:1fr}
+    .alist .ai{grid-template-columns:auto 1fr;row-gap:6px}
+    .bench{grid-template-columns:1fr}
+    .ba{grid-template-columns:repeat(3,1fr)}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid2{grid-template-columns:1fr}
+    .stocks{grid-template-columns:repeat(2,1fr)}
+    .detail{grid-template-columns:1fr}
+    .bt-metrics{grid-template-columns:repeat(2,1fr)}
+    .signals{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="brand">
+    <div class="logo">L</div>
+    <b>LUFFA&nbsp;SUPERBOX</b>
+    <span class="sub">AI 生态基金驾驶舱</span>
+  </div>
+  <span class="health-pill" id="modelHealth" title="model_health.status">
+    <span class="hpdot"></span><span class="hptxt">DEMO · 待接入</span>
+  </span>
+  <span class="demo-tag">演示数据 · 非投资建议</span>
+</div></div>
+
+<div class="wrap">
+
+  <!-- SFC / Luffa HK compliance ribbon -->
+  <div class="sfc">
+    <div class="sfc-l">
+      <span class="sfc-badge">SFC</span>
+      <div>
+        <div class="sfc-h">由 <b>Luffa 香港</b> 持牌实体托管 · 证监会 1/4/9 号牌(资产管理 / 就证券提供意见 / 证券交易)</div>
+        <div class="sfc-s">基金:<b>Luffa AI Ecosystem Fund · LAIF-I</b> · 合格投资者(PI)开放,本看板不构成要约或邀约</div>
+      </div>
+    </div>
+    <div class="sfc-r">
+      <span class="sfc-tag">JSON 契约 7/7 就绪</span>
+      <span class="sfc-tag">human-in-the-loop</span>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpis">
+    <div class="kpi"><div class="lab">基金净值 / 累计</div><div class="val num">1.184</div><div class="sub muted">起始 1.000</div></div>
+    <div class="kpi"><div class="lab">超额收益(vs 基准)</div><div class="val num pos">+6.1%</div><div class="sub pos">↑ 跑赢</div></div>
+    <div class="kpi"><div class="lab">当前回撤 / 最大</div><div class="val num">-4.2%</div><div class="sub muted">最大 -19.7%</div></div>
+    <div class="kpi"><div class="lab">组合 Beta</div><div class="val num">1.32</div><div class="sub warn">偏进攻</div></div>
+    <div class="kpi"><div class="lab">现金仓位</div><div class="val num">12%</div><div class="sub muted">已投 88%</div></div>
+  </div>
+
+  <!-- LAYER 1 + 2 -->
+  <div class="grid2">
+    <!-- climate -->
+    <div class="card">
+      <div class="sec-h" style="margin:0 0 4px">
+        <span class="k">气候层 / L1</span><h2>市场气候门控</h2>
+        <span class="note">决定整体仓位 &amp; Beta</span>
+      </div>
+      <div class="regime-top">
+        <div class="season">☀️</div>
+        <div>
+          <div class="verdict">当前气候:<span>盛夏 · 进攻为主</span></div>
+          <div class="why">4 项门控信号中 3 项偏多,1 项预警 — 维持高 Beta,但已提示供应链约束</div>
+        </div>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge"></div>
+        <div class="ptr" style="left:78%"></div>
+        <div class="gauge-labs"><span>防守 · 冬</span><span>中性 · 春秋</span><span>进攻 · 夏</span></div>
+      </div>
+      <div class="signals">
+        <div class="sig"><div class="n">超大厂 Capex 指引 ★ 主变量</div><div class="v"><span class="dot" style="background:var(--green)"></span>上修 ↑</div></div>
+        <div class="sig"><div class="n">流动性 / 利率环境</div><div class="v"><span class="dot" style="background:var(--green)"></span>中性偏松</div></div>
+        <div class="sig"><div class="n">推理 / Token 需求</div><div class="v"><span class="dot" style="background:var(--green)"></span>加速</div></div>
+        <div class="sig"><div class="n">电力 / 供应链约束</div><div class="v"><span class="dot" style="background:var(--amber)"></span>趋紧 ⚠</div></div>
+      </div>
+    </div>
+
+    <!-- exposure -->
+    <div class="card">
+      <div class="sec-h" style="margin:0 0 12px">
+        <span class="k">曝露层 / L2</span><h2>价值链曝露地图</h2>
+        <span class="note">识别"假分散"</span>
+      </div>
+      <div class="expo-bar">
+        <div style="width:39%;background:var(--compute)">算力 39%</div>
+        <div style="width:25%;background:var(--cloud)">云/模型 25%</div>
+        <div style="width:14%;background:var(--app)">应用 14%</div>
+        <div style="width:10%;background:var(--power)">供应链 10%</div>
+        <div style="width:12%;background:var(--cash);color:#cdd5e2">现金 12%</div>
+      </div>
+      <div class="legend">
+        <span class="it"><span class="sw" style="background:var(--compute)"></span>算力/芯片 · 4 标的</span>
+        <span class="it"><span class="sw" style="background:var(--cloud)"></span>云/模型 · 3 标的</span>
+        <span class="it"><span class="sw" style="background:var(--app)"></span>应用/Agent · 2 标的</span>
+        <span class="it"><span class="sw" style="background:var(--power)"></span>电力/供应链 · 1 标的</span>
+      </div>
+      <div class="conc">
+        <div class="b"><div class="v num">15%</div><div class="l">第一大持仓 NVDA</div></div>
+        <div class="b"><div class="v num">35%</div><div class="l">前三大集中度</div></div>
+        <div class="b"><div class="v num warn">0.81</div><div class="l">组合内平均相关</div></div>
+      </div>
+      <div class="alert">
+        <span>⚠</span>
+        <div><b>隐藏暴露预警:</b>10 个标的中约 8 个对"超大厂 Capex 叙事"高 Beta,真实独立判断 ≈ <b>3 注</b>。Capex 叙事一旦松动,组合 70%+ 将同向回撤 — 这不是 10 注分散,而是 1 注主导。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 3 STOCKS -->
+  <div class="sec-h">
+    <span class="k">个股层 / L3</span><h2>个股观测</h2>
+    <span class="note">点击卡片查看论点 · 健康度 · 止损触发器</span>
+  </div>
+  <div class="chips" id="chips">
+    <span class="chip on" data-f="all">全部 10</span>
+    <span class="chip" data-f="compute">算力/芯片</span>
+    <span class="chip" data-f="cloud">云/模型</span>
+    <span class="chip" data-f="app">应用/Agent</span>
+    <span class="chip" data-f="power">电力/供应链</span>
+  </div>
+  <div class="stocks" id="stocks"></div>
+  <div id="detail"></div>
+
+  <!-- ALERT CENTER -->
+  <div class="sec-h">
+    <span class="k">预警 / Circuit Breaker</span><h2>预警中心</h2>
+    <span class="note">复用 Gold Monitor 熔断架构</span>
+  </div>
+  <div class="card">
+    <div class="cb-row" id="cbrow"></div>
+    <div class="alist" id="alist"></div>
+    <div class="scenarios" id="scenarios">
+      <span class="lab">情景模拟(演示触发器命中如何级联到调仓):</span>
+      <span class="scn" data-tk="NVDA" data-cur="45">NVDA 数据中心增速→45%</span>
+      <span class="scn" data-tk="TSM" data-cur="72">TSM 稼动率→72%</span>
+      <span class="scn reset" data-reset="1">↺ 重置</span>
+    </div>
+  </div>
+
+  <!-- LAYER 3.5 ROTATION ENGINE + BENCH -->
+  <div class="sec-h">
+    <span class="k">主动管理 / L3.5</span><h2>调仓引擎 · 备用池</h2>
+    <span class="note">换出有据 · 换入有名单</span>
+  </div>
+  <div class="card">
+    <div class="rules">
+      <div class="rule"><div class="g">闸 1 · 触发</div><div class="d">持仓健康度 &lt; 70、止损触发器命中、或所在价值链段超配 — 才进入"换出"评估</div></div>
+      <div class="rule"><div class="g">闸 2 · 候选</div><div class="d">从备用池按段位匹配,就绪度高、催化临近者优先;优先选能改善分散的低 β 候选</div></div>
+      <div class="rule"><div class="g">闸 3 · 验证</div><div class="d">单票 ≤ 18%、前三大 ≤ 40%,且<b>不抬高</b> Capex-Beta 标的数 — 否则不建议执行</div></div>
+    </div>
+    <div id="suggestions"></div>
+  </div>
+
+  <div class="sec-h" style="margin-top:18px">
+    <span class="k">备用池</span><h2 style="font-size:14px">候补标的 · 6</h2>
+    <span class="note">按价值链段 &amp; Capex-Beta 标注</span>
+  </div>
+  <div class="bench" id="bench"></div>
+
+  <div class="sec-h" style="margin-top:18px">
+    <span class="k">模拟器</span><h2 style="font-size:14px">调仓模拟 · 不自动执行</h2>
+    <span class="note">先看影响,再决定</span>
+  </div>
+  <div class="card">
+    <div class="simctl">
+      <span class="lab">换出</span>
+      <select id="selOut"></select>
+      <span class="arrow">→</span>
+      <span class="lab">换入</span>
+      <select id="selIn"></select>
+      <button class="go" id="simGo">模拟调仓</button>
+    </div>
+    <div class="simres" id="simres"></div>
+  </div>
+
+  <!-- LAYER 4 BACKTEST -->
+  <div class="sec-h">
+    <span class="k">闭环层 / L4</span><h2>SuperBox 跟踪 · 方法论回测</h2>
+    <span class="note">把运气和能力分开</span>
+  </div>
+  <div class="card">
+    <div class="bt-banner">
+      <span>◷</span>
+      <div><b>这是演示曲线,不是真实回测。</b>下方业绩由示例数据生成,用于展示"宏观气候门控如何控制回撤"这一<i>预期</i>行为,并非已验证结果。接入 SuperBox 真实历史价格、按方法论逐期还原择时与权重后须重算,并注意<b>前视偏误</b>。</div>
+    </div>
+    <div class="bt-controls">
+      <span class="seg on" data-p="156">近 3 年</span>
+      <span class="seg" data-p="52">近 1 年</span>
+    </div>
+    <div class="chart-leg">
+      <span class="it"><span class="ln" style="background:var(--teal)"></span>方法论组合</span>
+      <span class="it"><span class="ln" style="background:var(--t3)"></span>基准(纳指/SOX 混合)</span>
+      <span class="it"><span class="ln" style="background:rgba(242,109,109,.5);height:8px;border-radius:2px"></span>门控防守期</span>
+    </div>
+    <svg id="chart" viewBox="0 0 900 260" preserveAspectRatio="none"></svg>
+    <div class="bt-metrics" id="metrics"></div>
+    <div class="contrib" id="contrib">
+      <div class="sec-h" style="margin:4px 0 8px"><span class="k" style="font-size:11px">归因</span><h2 style="font-size:13px">个股收益贡献(示例 · bps)</h2></div>
+    </div>
+  </div>
+
+  <footer>
+    <p><b>方法论:</b>自上而下、宏观气候门控的四段全产业链布局(算力 → 云/模型 → 应用 → 电力供应链)。L1 决定整体仓位与 Beta,L2 量化隐藏相关性,L3 逐标的跟踪论点健康度与止损触发器,L4 用归因与回测做诚实复盘。</p>
+    <p><b>诚实声明:</b>本看板所有净值、回测、KPI、健康度均为<b>演示数据</b>,用于展示驾驶舱结构与交互。真实使用须在 SuperBox 接入真实行情与基本面数据源后重算。回测存在前视偏误与幸存者偏差风险。本工具不构成投资建议,作者非持牌投资顾问。</p>
+    <p><b>合规框架:</b>本基金由 Luffa 香港(持牌实体)依香港证监会 (SFC) 第 1 / 4 / 9 类受规管活动持牌经营 — 证券交易 / 就证券提供意见 / 提供资产管理。所有调仓须经投资经理人工审核,人在回路;熔断为提示,不自动执行。</p>
+    <p class="dim">Luffa SuperBox · 演示构建 · 仅供 PI 合格投资者参考 · 不构成要约或邀约</p>
+  </footer>
+
+</div>
+
+<script>
+const LAYER = {
+  compute:{name:"算力/芯片",color:"#8B7FE8"},
+  cloud:{name:"云/模型",color:"#2DD4BF"},
+  app:{name:"应用/Agent",color:"#F08A6B"},
+  power:{name:"电力/供应链",color:"#E5A84B"}
+};
+const STOCKS = [
+  {tk:"NVDA",name:"英伟达",layer:"compute",wt:15,chg:1.8,health:82,
+   pillars:["AI 训练+推理算力的绝对霸主,CUDA 生态构成最深护城河","数据中心营收仍处加速期,Blackwell 放量接力","定价权强,毛利维持高位"],
+   kpi:[["数据中心营收 YoY","+94%"],["毛利率","75%"],["远期 PE","32x"],["在价值链段","算力 · 上游"]],
+   trip:"数据中心营收增速连续两季放缓,或前四大云厂自研 ASIC 替代显著加速"},
+  {tk:"AVGO",name:"博通",layer:"compute",wt:9,chg:0.9,health:76,
+   pillars:["定制 AI ASIC + 高速网络,绑定超大厂自研芯片浪潮","软件(VMware)提供稳定现金流对冲","AI 收入占比持续抬升"],
+   kpi:[["AI 收入 YoY","+63%"],["毛利率","77%"],["远期 PE","30x"],["在价值链段","算力 · ASIC/网络"]],
+   trip:"超大厂定制 ASIC 订单指引下修,或网络份额被蚕食"},
+  {tk:"TSM",name:"台积电",layer:"compute",wt:8,chg:0.6,health:80,
+   pillars:["先进制程与 CoWoS 封装的唯一可靠产能","全 AI 链上游卡位,客户高度依赖","产能利用率与定价同步抬升"],
+   kpi:[["先进制程营收占比",">60%"],["毛利率","58%"],["CoWoS 稼动","满载"],["在价值链段","算力 · 代工"]],
+   trip:"先进制程稼动率下行,或地缘风险实质性升级"},
+  {tk:"AMD",name:"超威半导体",layer:"compute",wt:7,chg:-0.7,health:64,
+   pillars:["GPU 第二供应商红利,MI 系列逐步上量","客户多元化降低单一依赖","数据中心份额仍有提升空间"],
+   kpi:[["数据中心 YoY","+38%"],["毛利率","53%"],["MI 放量","爬坡中"],["在价值链段","算力 · GPU"]],
+   trip:"MI 系列放量不及指引,或数据中心份额停滞"},
+  {tk:"MSFT",name:"微软",layer:"cloud",wt:10,chg:0.5,health:78,
+   pillars:["Azure + OpenAI + Copilot,模型到变现全链路","企业级分发渠道最强,AI 收入可见度高","现金流厚,Capex 可承受"],
+   kpi:[["Azure YoY","+31%"],["AI 贡献 Azure","+12pp"],["远期 PE","31x"],["在价值链段","云/模型"]],
+   trip:"Azure 增速明显放缓,且巨额 Capex 回报持续存疑"},
+  {tk:"GOOGL",name:"谷歌",layer:"cloud",wt:8,chg:0.3,health:72,
+   pillars:["Gemini 追赶 + 自有 TPU 降本,模型自主可控","云利润率改善路径清晰","搜索现金牛支撑 AI 投入"],
+   kpi:[["Cloud YoY","+28%"],["Cloud 利润率","转正抬升"],["远期 PE","21x"],["在价值链段","云/模型"]],
+   trip:"搜索货币化被 AI 答案侵蚀加速,核心利润承压"},
+  {tk:"META",name:"Meta",layer:"cloud",wt:7,chg:-0.4,health:70,
+   pillars:["Llama 开源生态绑定开发者,掌握分发","广告 AI 提升 ROI,变现确定性高","Capex 大但有广告现金流支撑"],
+   kpi:[["广告收入 YoY","+22%"],["Capex 同比","+大幅"],["远期 PE","24x"],["在价值链段","云/模型"]],
+   trip:"Capex 持续失控而 AI 变现明显滞后,自由现金流恶化"},
+  {tk:"PLTR",name:"Palantir",layer:"app",wt:8,chg:2.4,health:68,
+   pillars:["AIP 把 AI 落地为企业生产力,商业客户放量","美国商业增速强劲,本体经济性好","稀缺的'应用层兑现'标的"],
+   kpi:[["美商业客户 YoY","+大幅"],["净留存",">120%"],["远期 PE","高位"],["在价值链段","应用/Agent"]],
+   trip:"估值进入消化期叠加净新增客户放缓,杀估值风险最大"},
+  {tk:"NOW",name:"ServiceNow",layer:"app",wt:6,chg:0.4,health:74,
+   pillars:["工作流 Agent 嵌入企业核心流程,黏性强","cRPO 与净留存稳健,变现路径清晰","平台型,横向扩展能力强"],
+   kpi:[["cRPO YoY","+24%"],["净留存(NRR)","98%"],["远期 PE","45x"],["在价值链段","应用/Agent"]],
+   trip:"NRR 持续下行,或 Agent 模块变现不及预期"},
+  {tk:"VRT",name:"Vertiv",layer:"power",wt:10,chg:1.1,health:77,
+   pillars:["数据中心电力与散热刚需,液冷直接受益","订单 backlog 充裕,能见度高","电力正成为 AI 的硬约束,卡位关键瓶颈"],
+   kpi:[["订单 backlog","创新高"],["营收 YoY","+20%"],["毛利率","改善"],["在价值链段","电力/供应链"]],
+   trip:"数据中心建设节奏放缓,或 backlog 增速回落"}
+];
+
+const CONTRIB = {NVDA:142,AVGO:71,TSM:48,AMD:-22,MSFT:63,GOOGL:39,META:-18,PLTR:96,NOW:31,VRT:74};
+
+const CB = {NVDA:"high",AVGO:"high",TSM:"high",AMD:"high",MSFT:"high",GOOGL:"high",META:"high",PLTR:"low",NOW:"low",VRT:"high"};
+const BENCH = [
+  {tk:"MU",name:"美光",layer:"compute",cb:"mid",ready:78,
+   thesis:"HBM 内存周期向上,与逻辑芯片不同节奏,部分对冲算力单一周期",
+   cat:"HBM3E 放量 / 下季产能指引",trig:"AMD 若 MI 放量不及指引 → 同段以内存周期上行替代"},
+  {tk:"ARM",name:"Arm",layer:"compute",cb:"low",ready:72,
+   thesis:"IP 授权轻资产模式,版税随出货累积,相对独立于 Capex 周期",
+   cat:"AI 端侧授权 / 版税率提升",trig:"需要降低算力段重资产暴露时换入"},
+  {tk:"ORCL",name:"甲骨文",layer:"cloud",cb:"high",ready:74,
+   thesis:"OCI AI 基建追赶,RPO 高增长,云段第二梯队卡位",
+   cat:"OCI RPO 增速 / 财报",trig:"云段出现弱者(如 META Capex 失控)时同段替换"},
+  {tk:"CRM",name:"Salesforce",layer:"app",cb:"low",ready:70,
+   thesis:"Agentforce 把 Agent 直接变现,软件现金流厚,低 Capex 相关",
+   cat:"Agentforce 付费渗透进度",trig:"扩大应用段或需要改善分散时换入"},
+  {tk:"CEG",name:"Constellation",layer:"power",cb:"low",ready:80,
+   thesis:"核电直供数据中心,驱动因子是电力周期,与算力叙事低相关",
+   cat:"数据中心供电协议 / 核电产能",trig:"组合 Capex-Beta 过高 → 用电力侧降系统性相关"},
+  {tk:"ETN",name:"伊顿",layer:"power",cb:"mid",ready:75,
+   thesis:"电气设备与电网受益电力瓶颈,周期部分独立于半导体",
+   cat:"数据中心/电网电气订单",trig:"增配供应链段、对冲电力瓶颈时换入"}
+];
+const getCB = s => CB[s.tk] || s.cb;
+const segName = {compute:"算力",cloud:"云/模型",app:"应用",power:"供应链"};
+function cbTag(v){return {high:["高","#F26D6D"],mid:["中","#E5A84B"],low:["低","#4ADE80"]}[v];}
+
+function hbarColor(h){return h>=78?"var(--green)":h>=66?"var(--amber)":"var(--red)";}
+
+/* ---- stock grid ---- */
+let filter="all", selected="NVDA";
+const grid=document.getElementById("stocks");
+function renderGrid(){
+  const list=STOCKS.filter(s=>filter==="all"||s.layer===filter);
+  grid.innerHTML=list.map(s=>{
+    const c=LAYER[s.layer].color, up=s.chg>=0;
+    const a=alertState(s.tk); const cls=a.state==="触发"?"fire":a.state==="观察"?"watch":"";
+    const dotc=a.state==="触发"?"var(--red)":a.state==="观察"?"var(--amber)":"";
+    return `<div class="stk ${cls} ${s.tk===selected?'sel':''}" data-tk="${s.tk}">
+      <div class="lcolor" style="background:${c}"></div>
+      ${dotc?`<span class="abadge" style="background:${dotc}"></span>`:''}
+      <div><span class="tk">${s.tk}</span><span class="wt">${s.wt}%</span></div>
+      <div class="chg ${up?'pos':'neg'}">${up?'+':''}${s.chg.toFixed(1)}%</div>
+      <div class="hbar"><i style="width:${s.health}%;background:${hbarColor(s.health)}"></i></div>
+    </div>`;
+  }).join("");
+  grid.querySelectorAll(".stk").forEach(el=>el.onclick=()=>{selected=el.dataset.tk;renderGrid();renderDetail();});
+}
+function renderDetail(){
+  const s=STOCKS.find(x=>x.tk===selected); const L=LAYER[s.layer];
+  document.getElementById("detail").innerHTML=`<div class="detail">
+    <div class="hd">
+      <span class="tk">${s.tk}</span>
+      <span class="name">${s.name}</span>
+      <span class="pill" style="background:${L.color}22;color:${L.color}">${L.name}</span>
+      <span class="wt"><b class="num">${s.wt}%</b><span>组合权重</span></span>
+    </div>
+    <div class="blk">
+      <div class="bh">论点三支柱 · 为什么持有</div>
+      <ul class="pillars">${s.pillars.map(p=>`<li>${p}</li>`).join("")}</ul>
+    </div>
+    <div class="blk">
+      <div class="bh">关键基本面 KPI</div>
+      ${s.kpi.map(k=>`<div class="kpiline"><span class="muted">${k[0]}</span><span class="v">${k[1]}</span></div>`).join("")}
+    </div>
+    <div class="blk">
+      <div class="bh">论点健康度</div>
+      <div class="healthrow">
+        <div class="track"><i style="width:${s.health}%;background:${hbarColor(s.health)}"></i></div>
+        <span class="num" style="font-weight:600">${s.health}</span>
+      </div>
+      <div class="dim" style="font-size:12px;margin-top:6px">${s.health>=78?'良好 — 基本面仍在验证论点':s.health>=66?'中性 — 需密切跟踪':'偏弱 — 论点出现裂痕'}</div>
+    </div>
+    <div class="blk">
+      <div class="bh">止损 / 反转触发器(买入时预设)</div>
+      <div class="trip"><b>承认看错的条件:</b>${s.trip}</div>
+    </div>
+  </div>`;
+}
+document.querySelectorAll("#chips .chip").forEach(c=>c.onclick=()=>{
+  document.querySelectorAll("#chips .chip").forEach(x=>x.classList.remove("on"));
+  c.classList.add("on"); filter=c.dataset.f;
+  const list=STOCKS.filter(s=>filter==="all"||s.layer===filter);
+  if(!list.find(s=>s.tk===selected)) selected=list[0].tk;
+  renderGrid(); renderDetail();
+});
+
+/* ---- backtest synthetic series ---- */
+function lcg(seed){return function(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};}
+function buildSeries(n){
+  const r=lcg(42); const bench=[100], meth=[100];
+  // mark defensive windows (methodology goes to cash -> dampens downside)
+  const defensive=new Array(n).fill(false);
+  [[40,52],[96,108]].forEach(([a,b])=>{for(let i=a;i<b;i++)defensive[i]=true;});
+  for(let i=1;i<n;i++){
+    let drift=0.0022, shock=0;
+    if(i>=40&&i<54) drift=-0.012;          // drawdown episode 1
+    if(i>=96&&i<110) drift=-0.014;          // drawdown episode 2
+    const noise=(r()-0.5)*0.03;
+    const bret=drift+noise+shock;
+    bench.push(bench[i-1]*(1+bret));
+    // methodology: small consistent alpha, captures less downside in defensive windows
+    let mret=bret+0.0010;
+    if(defensive[i]) mret=bret*0.30+0.0005; // dampened participation
+    meth.push(meth[i-1]*(1+mret));
+  }
+  return {bench,meth,defensive};
+}
+const FULL=buildSeries(156);
+
+function metricsOf(arr){
+  const ret=arr[arr.length-1]/arr[0]-1;
+  const yrs=arr.length/52;
+  const ann=Math.pow(1+ret,1/yrs)-1;
+  let peak=arr[0],mdd=0;
+  for(const v of arr){peak=Math.max(peak,v);mdd=Math.min(mdd,v/peak-1);}
+  const rets=[]; for(let i=1;i<arr.length;i++)rets.push(arr[i]/arr[i-1]-1);
+  const mean=rets.reduce((a,b)=>a+b,0)/rets.length;
+  const sd=Math.sqrt(rets.reduce((a,b)=>a+(b-mean)**2,0)/rets.length);
+  const sharpe=(mean/sd)*Math.sqrt(52);
+  const win=rets.filter(x=>x>0).length/rets.length;
+  return {ann,mdd,sharpe,win,total:ret};
+}
+
+let period=156;
+function drawChart(){
+  const n=period;
+  const b=FULL.bench.slice(-n), m=FULL.meth.slice(-n), def=FULL.defensive.slice(-n);
+  // renormalize to 100 at window start
+  const b0=b[0],m0=m[0];
+  const bN=b.map(v=>v/b0*100), mN=m.map(v=>v/m0*100);
+  const W=900,H=260,padL=8,padR=8,padT=14,padB=22;
+  const all=bN.concat(mN); const lo=Math.min(...all),hi=Math.max(...all);
+  const x=i=>padL+(i/(n-1))*(W-padL-padR);
+  const y=v=>padT+(1-(v-lo)/(hi-lo))*(H-padT-padB);
+  const path=a=>a.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  // defensive shaded rects
+  let rects='',start=-1;
+  for(let i=0;i<n;i++){
+    if(def[i]&&start<0)start=i;
+    if((!def[i]||i===n-1)&&start>=0){const end=def[i]?i:i-1;
+      rects+=`<rect x="${x(start)}" y="${padT}" width="${x(end)-x(start)}" height="${H-padT-padB}" fill="rgba(242,109,109,.10)"/>`;start=-1;}
+  }
+  // gridlines (4)
+  let grid='';for(let g=0;g<=4;g++){const gy=padT+(g/4)*(H-padT-padB);
+    grid+=`<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${W-padR}" y2="${gy.toFixed(1)}" stroke="rgba(255,255,255,.05)"/>`;}
+  document.getElementById("chart").innerHTML=
+    grid+rects+
+    `<path d="${path(bN)}" fill="none" stroke="#6B7480" stroke-width="1.6"/>`+
+    `<path d="${path(mN)}" fill="none" stroke="#2DD4BF" stroke-width="2.2"/>`;
+  // metrics
+  const M=metricsOf(mN),B=metricsOf(bN);
+  const excess=(M.total-B.total)*100;
+  document.getElementById("metrics").innerHTML=`
+    <div class="m"><div class="v num pos">+${(M.ann*100).toFixed(1)}%</div><div class="l">年化收益</div></div>
+    <div class="m"><div class="v num">${(M.mdd*100).toFixed(1)}%</div><div class="l">最大回撤</div></div>
+    <div class="m"><div class="v num">${M.sharpe.toFixed(2)}</div><div class="l">夏普比率</div></div>
+    <div class="m"><div class="v num">${(M.win*100).toFixed(0)}%</div><div class="l">周胜率</div></div>
+    <div class="m"><div class="v num pos">+${excess.toFixed(1)}%</div><div class="l">超额(vs 基准)</div></div>`;
+}
+document.querySelectorAll(".seg").forEach(s=>s.onclick=()=>{
+  document.querySelectorAll(".seg").forEach(x=>x.classList.remove("on"));
+  s.classList.add("on"); period=+s.dataset.p; drawChart();
+});
+
+/* contrib */
+function renderContrib(){
+  const entries=Object.entries(CONTRIB).sort((a,b)=>b[1]-a[1]);
+  const max=Math.max(...entries.map(e=>Math.abs(e[1])));
+  const host=document.getElementById("contrib");
+  host.insertAdjacentHTML("beforeend",entries.map(([tk,v])=>{
+    const pos=v>=0,w=Math.abs(v)/max*100;
+    return `<div class="row">
+      <span class="tk">${tk}</span>
+      <div class="barwrap"><i style="${pos?'left:50%':'right:50%'};width:${w/2}%;background:${pos?'var(--green)':'var(--red)'}"></i>
+        <span style="position:absolute;left:50%;top:-1px;bottom:-1px;width:1px;background:var(--line2)"></span></div>
+      <span class="bp ${pos?'pos':'neg'}">${pos?'+':''}${v} bps</span>
+    </div>`;
+  }).join(""));
+}
+
+/* ---- bench pool + rotation engine ---- */
+function renderBench(){
+  document.getElementById("bench").innerHTML=BENCH.map(b=>{
+    const c=LAYER[b.layer].color, t=cbTag(b.cb);
+    return `<div class="bc">
+      <div class="lc" style="background:${c}"></div>
+      <div class="top"><span class="tk">${b.tk}</span><span class="nm">${b.name}</span>
+        <span class="cb" style="background:${t[1]}22;color:${t[1]}">Capex-β ${t[0]}</span></div>
+      <div class="ready"><div class="tr"><i style="width:${b.ready}%;background:${hbarColor(b.ready)}"></i></div>
+        <span class="num" style="font-size:11px;color:var(--t2)">就绪 ${b.ready}</span></div>
+      <div class="th">${b.thesis}</div>
+      <div class="meta"><b>催化:</b>${b.cat}</div>
+      <div class="trig">⤷ 入选触发:${b.trig}</div>
+    </div>`;
+  }).join("");
+}
+function fillSelects(){
+  document.getElementById("selOut").innerHTML=STOCKS.map(s=>`<option value="${s.tk}">${s.tk} · ${segName[s.layer]} · 健康 ${s.health}</option>`).join("");
+  document.getElementById("selIn").innerHTML=BENCH.map(b=>`<option value="${b.tk}">${b.tk} · ${segName[b.layer]} · 就绪 ${b.ready}</option>`).join("");
+}
+function renderSuggestions(){
+  const amd=STOCKS.find(s=>s.tk==="AMD");
+  const high=STOCKS.filter(s=>getCB(s)==="high").length;
+  const sugs=[
+    {ic:"⚠",out:"AMD",in:"MU",
+     tx:`<b>AMD</b> 健康度 ${amd.health} 偏弱、MI 放量未达指引 → 同段升级为 <b>MU</b>(HBM 周期向上)`,
+     why:"闸1 健康度触发 · 同属算力段,纯个股升级"},
+    {ic:"◈",out:"AMD",in:"CEG",
+     tx:`组合 Capex-Beta <b>${high}/10</b> 偏高、真实独立判断仅约 3 注 → 换出高 β 算力、换入 <b>CEG</b> 降系统性相关`,
+     why:"闸3 改善分散 · 电力侧与算力叙事低相关"}
+  ];
+  document.getElementById("suggestions").innerHTML=
+    `<div style="font-size:12px;color:var(--t2);margin-bottom:10px">自动调仓建议(供决策参考,人工拍板,不自动执行):</div>`+
+    sugs.map(s=>`<div class="sug"><span class="ic">${s.ic}</span>
+      <div class="tx">${s.tx}<div class="why">${s.why}</div></div>
+      <button data-out="${s.out}" data-in="${s.in}">载入模拟器</button></div>`).join("");
+  document.querySelectorAll(".sug button").forEach(btn=>btn.onclick=()=>{
+    document.getElementById("selOut").value=btn.dataset.out;
+    document.getElementById("selIn").value=btn.dataset.in;
+    runSim();
+    document.getElementById("simres").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+}
+function runSim(){
+  const outTk=document.getElementById("selOut").value, inTk=document.getElementById("selIn").value;
+  const out=STOCKS.find(s=>s.tk===outTk), cand=BENCH.find(s=>s.tk===inTk);
+  const before=STOCKS, after=STOCKS.filter(s=>s.tk!==outTk).concat([{...cand,wt:out.wt,health:cand.ready}]);
+  const sw=l=>{const s={compute:0,cloud:0,app:0,power:0};l.forEach(x=>s[x.layer]+=x.wt);return s;};
+  const t3=l=>l.map(x=>x.wt).sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0);
+  const hc=l=>l.filter(x=>getCB(x)==="high").length;
+  const sb=sw(before),sa=sw(after),t3b=t3(before),t3a=t3(after),hcb=hc(before),hca=hc(after);
+  const cell=(l,bv,av)=>{const ch=av-bv,col=ch===0?'':ch>0?'pos':'neg';
+    return `<div class="c"><div class="l">${l}</div><div class="v"><span class="a">${bv}%</span> → <span class="${col}" style="font-weight:600">${av}%</span></div></div>`;};
+  const g1=out.health<70, g2=cand.ready>=70;
+  const capOK=out.wt<=18, concOK=t3a<=40, betaOK=hca<=hcb, g3=capOK&&concOK&&betaOK;
+  const gerr=[]; if(!capOK)gerr.push("单票>18%"); if(!concOK)gerr.push("前三大>40%"); if(!betaOK)gerr.push("Capex-β 上升");
+  const gate=(n,state,detail)=>`<div class="gate ${state}"><div class="gh">${n}</div>${detail}</div>`;
+  let verdict;
+  if(hca<hcb) verdict=`<span class="pos">✓ 降低系统性相关</span> — Capex-Beta 标的 ${hcb} → ${hca},真实独立判断增加,正是组合最需要的方向`;
+  else if(getCB(out)==="high"&&cand.cb==="high") verdict=`<span class="warn">○ 未改善相关性</span> — 高 β 换高 β,集中度变化 ${(t3a-t3b>=0?'+':'')}${t3a-t3b}pp,隐藏暴露未实质改善`;
+  else verdict=`<span class="muted">— 中性</span> — 段位与相关性变化有限,主要为个股层面升级`;
+  document.getElementById("simres").innerHTML=`
+    <div class="ba">
+      ${cell("算力",sb.compute,sa.compute)}
+      ${cell("云/模型",sb.cloud,sa.cloud)}
+      ${cell("应用",sb.app,sa.app)}
+      ${cell("供应链",sb.power,sa.power)}
+      ${cell("前三大集中",t3b,t3a)}
+      <div class="c"><div class="l">Capex-β 标的</div><div class="v"><span class="a">${hcb}</span> → <span class="${hca<hcb?'pos':hca>hcb?'neg':''}" style="font-weight:600">${hca}</span></div></div>
+    </div>
+    <div class="gates">
+      ${gate("闸1 · 触发",g1?'ok':'na',g1?`${outTk} 健康 ${out.health} &lt; 70,满足换出条件`:`${outTk} 健康 ${out.health},无强制换出信号`)}
+      ${gate("闸2 · 候选",g2?'ok':'na',`${inTk} 就绪 ${cand.ready}${g2?',达标':',偏低需观察'}`)}
+      ${gate("闸3 · 验证",g3?'ok':'no',g3?'单票≤18% · 前三大≤40% · β 不上升':gerr.join(" · "))}
+    </div>
+    <div class="verdict-line">${verdict}${g3?'':' <span class="neg">· 闸3 未通过,不建议执行</span>'}</div>`;
+}
+document.getElementById("simGo").onclick=runSim;
+/* ---- alert center / circuit breaker (reuses Gold Monitor architecture) ---- */
+const MON = {
+  NVDA:{m:"数据中心营收 YoY",cur:94,thr:60,dir:"below",unit:"%"},
+  AVGO:{m:"AI 收入 YoY",cur:63,thr:35,dir:"below",unit:"%"},
+  TSM:{m:"先进制程稼动率",cur:96,thr:80,dir:"below",unit:"%"},
+  AMD:{m:"MI 数据中心 YoY",cur:38,thr:40,dir:"below",unit:"%"},
+  MSFT:{m:"Azure YoY",cur:31,thr:25,dir:"below",unit:"%"},
+  GOOGL:{m:"搜索货币化稳健度",cur:80,thr:70,dir:"below",unit:""},
+  META:{m:"Capex / 经营现金流",cur:62,thr:65,dir:"above",unit:"%"},
+  PLTR:{m:"远期 PE 历史分位",cur:88,thr:90,dir:"above",unit:""},
+  NOW:{m:"净留存 NRR",cur:98,thr:92,dir:"below",unit:"%"},
+  VRT:{m:"订单 backlog YoY",cur:28,thr:15,dir:"below",unit:"%"}
+};
+const PUSH_TARGET = {NVDA:"CEG",AVGO:"ORCL",TSM:"CEG",AMD:"MU",MSFT:"ORCL",GOOGL:"CRM",META:"ORCL",PLTR:"CRM",NOW:"CRM",VRT:"ETN"};
+let OVERRIDE = {};
+function alertState(tk){
+  const o=Object.assign({},MON[tk],OVERRIDE[tk]||{});
+  const {cur,thr,dir}=o; let breach,warn;
+  if(dir==="below"){breach=cur<thr; warn=cur<thr*1.05;}
+  else{breach=cur>thr; warn=cur>thr*0.90;}
+  return {...o,state:breach?"触发":warn?"观察":"正常"};
+}
+function renderAlerts(){
+  // portfolio-level circuit breakers (Gold Monitor style)
+  const dd=4.2, corr=0.81, high=STOCKS.filter(s=>getCB(s)==="high").length;
+  const cb=[
+    {h:"回撤熔断",icon:"ti-activity-heartbeat",st:dd<5?"正常":dd<8?"减半":dd<15?"暂停":"清仓",
+     col:dd<5?"var(--green)":"var(--amber)",detail:`当前 −${dd}% · 触发线 −5% / −8% / −15%`},
+    {h:"相关性熔断",icon:"ti-affiliate",st:corr>=0.85?"减仓":corr>=0.75?"观察":"正常",
+     col:corr>=0.85?"var(--red)":corr>=0.75?"var(--amber)":"var(--green)",detail:`平均相关 ${corr} · Capex-β ${high}/10 · 减仓线 0.85`},
+    {h:"信号有效性 (IC)",icon:"ti-wave-sine",st:"待接入",
+     col:"var(--t3)",detail:"门控近 60 日 IC · 接入真实数据后启用"}
+  ];
+  document.getElementById("cbrow").innerHTML=cb.map(x=>`<div class="cbx">
+    <div class="h"><i class="ti ${x.icon}" aria-hidden="true"></i>${x.h}</div>
+    <div class="st"><span class="stat-dot" style="background:${x.col}"></span>${x.st}</div>
+    <div class="lad">${x.detail}</div></div>`).join("");
+  // per-stock alerts (触发 first, then 观察)
+  const fired=[],watched=[];
+  STOCKS.forEach(s=>{const a=alertState(s.tk);
+    if(a.state==="触发")fired.push({s,a}); else if(a.state==="观察")watched.push({s,a});});
+  const all=fired.concat(watched);
+  const host=document.getElementById("alist");
+  if(!all.length){host.innerHTML=`<div style="font-size:12.5px;color:var(--t2);padding:6px 2px">无触发或观察项 · 10 个持仓监控指标均在阈值内。</div>`;return;}
+  host.innerHTML=`<div style="font-size:12px;color:var(--t2);margin:2px 0 10px">活跃预警 ${fired.length} 触发 / ${watched.length} 观察 — 触发项自动建议进入调仓评估:</div>`+
+    all.map(({s,a})=>{
+      const fire=a.state==="触发", cls=fire?"fire":"watch", sevtxt=fire?"触发":"观察";
+      const tgt=PUSH_TARGET[s.tk]||"CEG";
+      const cmp=a.dir==="below"?"跌破":"升破";
+      return `<div class="ai ${cls}">
+        <span class="sev ${cls}">${sevtxt}</span>
+        <div><span class="tk">${s.tk}</span>
+          <div class="cond">${a.m} ${cmp}阈值
+            <div class="sub">触发器:${s.trip}</div></div></div>
+        <div class="val"><span style="color:${fire?'var(--red)':'var(--amber)'}">${a.cur}${a.unit}</span>
+          <div class="dim" style="font-size:11px">阈值 ${a.thr}${a.unit}</div></div>
+        <button class="push" data-out="${s.tk}" data-in="${tgt}">推送到调仓 →</button>
+      </div>`;
+    }).join("");
+  host.querySelectorAll(".push").forEach(b=>b.onclick=()=>{
+    document.getElementById("selOut").value=b.dataset.out;
+    document.getElementById("selIn").value=b.dataset.in;
+    runSim();
+    document.getElementById("simres").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+}
+document.querySelectorAll(".scn").forEach(el=>el.onclick=()=>{
+  if(el.dataset.reset){OVERRIDE={};document.querySelectorAll(".scn").forEach(x=>x.classList.remove("on"));}
+  else{
+    const on=el.classList.toggle("on");
+    if(on)OVERRIDE[el.dataset.tk]={cur:+el.dataset.cur}; else delete OVERRIDE[el.dataset.tk];
+  }
+  renderAlerts(); renderGrid();
+});
+
+renderBench(); fillSelects(); renderSuggestions();
+document.getElementById("selOut").value="AMD"; document.getElementById("selIn").value="MU"; runSim();
+
+renderGrid(); renderDetail(); drawChart(); renderContrib(); renderAlerts();
+
+/* ---- model_health binding (driven by pipeline/output/model_health.json when接入) ---- */
+const MODEL_HEALTH = {
+  status:"demo", oos_ic:null, alpha_confirmed:false,
+  factor_ic:{capex_revision:null,earnings_revision:null,momentum:null,valuation:null}
+};
+(function applyModelHealth(){
+  const el=document.getElementById("modelHealth");
+  if(!el) return;
+  const live = MODEL_HEALTH.status==="live";
+  el.classList.toggle("live", live);
+  el.querySelector(".hptxt").textContent =
+    live ? `LIVE · IC ${(MODEL_HEALTH.oos_ic ?? 0).toFixed(2)} · alpha ${MODEL_HEALTH.alpha_confirmed?"已确认":"未确认"}`
+         : "DEMO · 待接入";
+})();
+</script>
+</body>
+</html>
