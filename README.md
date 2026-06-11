@@ -13,7 +13,7 @@
 ```
 .
 ├── README.md
-├── luffa_superbox_fund.html              # ① 自包含 HTML 演示看板
+├── index.html                            # ① 自包含 HTML 演示看板 (Vercel 默认入口)
 ├── superbox-fund/                        # ② Luffa SuperBox 原生小程序
 │   ├── app.js / app.json / app.wxss      #    入口 + tabBar + 暗色主题
 │   ├── project.config.json               #    Luffa Cloud-Devtools 工程
@@ -37,7 +37,7 @@
 
 ## 双前端
 
-### ① HTML 演示看板 — [luffa_superbox_fund.html](luffa_superbox_fund.html)
+### ① HTML 演示看板 — [index.html](index.html)
 
 单文件、自包含、零外部依赖,直接浏览器打开。包含 7 大模块:
 
